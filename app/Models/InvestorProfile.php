@@ -2,20 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable(['idUsers', 'name'])]
 class InvestorProfile extends Model
 {
-    //
     protected $table = 'investor_profile'; // Deklarasi nama tabel karena singular
 
-    protected $fillable = [
-        'idUsers',
-        'name',
-    ];
-
     // Relasi Inverse ke User
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'idUsers', 'id');
     }

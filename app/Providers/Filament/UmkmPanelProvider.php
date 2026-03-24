@@ -51,6 +51,10 @@ class UmkmPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets/Umkm'), for: 'App\Filament\Widgets\Umkm')
+            ->renderHook(
+                'panels::auth.login.form.after',
+                fn () => view('filament.hooks.halaman-utama-button'),
+            )
             ->widgets([
                 AccountWidget::class,
             ])

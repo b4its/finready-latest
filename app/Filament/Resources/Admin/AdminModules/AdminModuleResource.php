@@ -7,7 +7,7 @@ use App\Filament\Resources\Admin\AdminModules\Pages\EditAdminModule;
 use App\Filament\Resources\Admin\AdminModules\Pages\ListAdminModules;
 use App\Filament\Resources\Admin\AdminModules\Schemas\AdminModuleForm;
 use App\Filament\Resources\Admin\AdminModules\Tables\AdminModulesTable;
-use App\Models\AdminModule;
+use App\Models\Modul;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class AdminModuleResource extends Resource
 {
-    protected static ?string $model = AdminModule::class;
+    protected static ?string $model = Modul::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

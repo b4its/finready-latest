@@ -967,17 +967,31 @@
           <a href="#fitur" class="hide-mobile">Fitur</a>
           <a href="#kursus" class="hide-mobile">Kursus</a>
           <a href="#testimoni" class="hide-mobile">Testimoni</a>
-        <a href="{{ route('authenticate.login') }}" class="hide-mobile">
-          <div class="btn btn-outline" >
-            Masuk
-          </div>
-        </a>
-          
-        <a href="{{ route('authenticate.register') }}" class="hide-mobile">
-            <div class="btn btn-primary btn-hero">
-              Daftar Gratis
-            </div>
-          </a>
+         @auth
+            @if (Auth::user()->role == "umkm")
+                <a href="{{ route('filament.umkm.pages.dashboard') }}" class="hide-mobile">
+                    <div class="btn btn-outline">Panel UMKM</div>
+                </a>
+            @elseif (Auth::user()->role == "investor")
+                <a href="{{ route('filament.investor.pages.dashboard') }}" class="hide-mobile">
+                    <div class="btn btn-outline">Panel Investor</div>
+                </a>
+            @else
+                <a href="{{ route('filament.admin.pages.dashboard') }}" class="hide-mobile">
+                    <div class="btn btn-outline">Panel Admin</div>
+                </a>
+            @endif
+          @else
+              <a href="{{ route('authenticate.login') }}" class="hide-mobile">
+                  <div class="btn btn-outline">Masuk</div>
+              </a>
+              
+              <a href="{{ route('authenticate.register') }}" class="hide-mobile">
+                  <div class="btn btn-primary btn-hero">Daftar Gratis</div>
+              </a>
+          @endauth
+
+
 
         </div>
 

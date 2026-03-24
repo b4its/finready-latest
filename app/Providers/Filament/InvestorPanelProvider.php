@@ -51,6 +51,10 @@ class InvestorPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets/Investor'), for: 'App\Filament\Widgets\Investor')
+            ->renderHook(
+                'panels::auth.login.form.after',
+                fn () => view('filament.hooks.halaman-utama-button'),
+            )
             ->widgets([
                 AccountWidget::class,
             ])
