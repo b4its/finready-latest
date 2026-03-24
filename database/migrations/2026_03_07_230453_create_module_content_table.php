@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->string('type')->nullable();
             $table->string('url')->nullable();
+            $table->json('document_json')->nullable();
             $table->timestamps();
         });
     }

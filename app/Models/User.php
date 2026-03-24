@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,14 +14,8 @@ use Illuminate\Notifications\Notifiable;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -41,5 +34,11 @@ class User extends Authenticatable
     public function scores(): HasMany
     {
         return $this->hasMany(Score::class, 'idUsers', 'id');
+    }
+
+    // Relasi One-to-Many dengan LearnProgress
+    public function learnProgresses(): HasMany
+    {
+        return $this->hasMany(LearnProgress::class, 'idUsers', 'id');
     }
 }

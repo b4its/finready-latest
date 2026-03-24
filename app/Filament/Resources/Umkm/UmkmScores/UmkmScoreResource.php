@@ -43,8 +43,8 @@ class UmkmScoreResource extends Resource
     {
         return [
             'index' => ListUmkmScores::route('/'),
-            'create' => CreateUmkmScore::route('/create'),
-            'edit' => EditUmkmScore::route('/{record}/edit'),
+            // 'create' => CreateUmkmScore::route('/create'),
+            // 'edit' => EditUmkmScore::route('/{record}/edit'),
         ];
     }
 }

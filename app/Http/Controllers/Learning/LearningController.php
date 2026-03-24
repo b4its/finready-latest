@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Learning;
 
 use App\Http\Controllers\Controller;
+use App\Models\Modul;
 use Illuminate\Http\Request;
 
 class LearningController extends Controller
@@ -12,8 +13,17 @@ class LearningController extends Controller
      */
     public function index()
     {
-        //
-        return view('learning.index_learning');
+        // Ambil semua modul beserta kontennya (Eager Loading untuk performa)
+        $modules = Modul::with('contents')->get();
+
+        // Hitung statistik untuk sidebar
+        $totalModules = $modules->count();
+        $totalLessons = $modules->sum(function($module) {
+            return $module->contents->count();
+        });
+
+        // Kirim data ke view
+        return view('learning.index_learning', compact('modules', 'totalModules', 'totalLessons'));
     }
 
     /**

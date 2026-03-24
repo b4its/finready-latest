@@ -7,6 +7,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -17,7 +18,7 @@ class AdminModulesTable
         return $table
             ->query(
                 Modul::query()
-                    ->selectRaw('moduls.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
+                    ->selectRaw('modul.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
                     ->orderBy('created_at', 'desc') // urutkan tampilannya dari terbaru
             )
             ->columns([
@@ -25,8 +26,13 @@ class AdminModulesTable
                 TextColumn::make('row_num')
                     ->label('No')
                     ->sortable(),
+
                 TextColumn::make('name')
                     ->label('Nama Modul')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('max_point')
+                    ->label('Poin Maksimal')
                     ->searchable()
                     ->sortable(),
             ])
@@ -34,6 +40,7 @@ class AdminModulesTable
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make()
                     ->button()

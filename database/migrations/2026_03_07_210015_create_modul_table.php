@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->string('type')->nullable();
+            $table->bigInteger('max_point')->default(100);
             $table->timestamps();
         });
     }

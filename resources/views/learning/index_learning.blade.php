@@ -531,34 +531,26 @@
     }
 
     svg { vertical-align: middle; }
+    a {
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
   <div class="header-inner">
-
-    <!-- TOP BAR: navigasi kiri + dark mode toggle kanan -->
     <div class="top-bar">
       <div class="top-bar-left">
         <div class="breadcrumb">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
           <span>Course</span>
         </div>
-        <!-- <div class="breadcrumb">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-          <span>Kembali</span>
-        </div> -->
       </div>
-
-      <!-- Dark Mode Toggle -->
       <button class="dark-toggle" onclick="toggleDark()" aria-label="Toggle dark mode">
-        <!-- Sun icon (light mode) -->
         <svg class="toggle-icon" id="icon-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
         </svg>
-        <!-- Moon icon (dark mode) -->
         <svg class="toggle-icon" id="icon-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
@@ -567,276 +559,141 @@
       </button>
     </div>
 
-    <!-- HEADER ROW: judul + tombol Continue Learning sejajar Kembali -->
     <div class="header-row">
-      <button class="btn-continue">
+      <a href="{{ route('filament.umkm.pages.dashboard') }}" class="btn-continue">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         Kembali
-      </button>
+      </a>
       <button class="btn-continue">
         Continue Learning
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
       </button>
     </div>
+    
     <div class="header-row">
       <div class="header-text">
         <h1>Pembelajaran Akuntansi</h1>
-        <p>Build modern, responsive websites from scratch. Learn HTML, CSS, JavaScript, and responsive design principles through hands-on projects.</p>
+        <p>Menu ini menyediakan beberapa materi berupa e-book, video edukasi yang relevan untuk Anda pelajari dan pastikan Anda memahaminya karena akan ada kuis yang akan mempengaruhi poin Anda.</p>
       </div>
     </div>
 
     <div class="progress-wrap">
       <div class="progress-labels">
         <span>Your progress</span>
-        <span>35% completed</span>
+        <span>0% completed</span>
       </div>
       <div class="progress-bar-bg">
-        <div class="progress-bar-fill" style="width:35%"></div>
+        <div class="progress-bar-fill" style="width:0%"></div>
       </div>
     </div>
   </div>
 </header>
 
-<!-- LAYOUT -->
 <div class="layout">
-  <!-- MAIN -->
   <main class="main-col">
     <div class="lp-header">
       <h2>Learning Path</h2>
-      <span>6 modules</span>
+      <span>{{ $totalModules }} modules</span>
     </div>
 
-    <!-- MODULE 1 -->
+    @foreach($modules as $index => $module)
     <div class="module-wrap">
       <div class="timeline-col">
-        <div class="module-dot completed">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <div class="module-dot in-progress">
+          <span>{{ $loop->iteration }}</span>
         </div>
-        <div class="timeline-line completed"></div>
+        @if(!$loop->last)
+            <div class="timeline-line"></div>
+        @endif
       </div>
-      <div class="module-card" id="mc1">
-        <button class="module-card-btn" onclick="toggleModule(1)">
+      
+      <div class="module-card in-progress" id="mc{{ $module->id }}">
+        <button class="module-card-btn" onclick="toggleModule({{ $module->id }})">
           <div class="module-card-info">
             <div class="module-badge-row">
-              <span class="module-num-label completed">Module 1</span>
-              <span class="badge badge-success">Completed</span>
+              <span class="module-num-label in-progress">Module {{ $loop->iteration }}</span>
+              <span class="badge badge-primary">Tersedia</span>
             </div>
-            <div class="module-title">Introduction to Web Development</div>
-            <div class="module-desc">Get started with the fundamentals of how the web works and set up your development environment.</div>
+            <div class="module-title">{{ $module->name }}</div>
+            <div class="module-desc">{{ $module->description ?? 'Deskripsi modul belum tersedia.' }}</div>
           </div>
-          <span class="module-meta"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg> 45 min</span>
-          <svg class="chevron" id="chev1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7"/></svg>
+          <span class="module-meta">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg> 
+            Point: {{ $module->max_point }}
+          </span>
+          <svg class="chevron" id="chev{{ $module->id }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7"/></svg>
         </button>
+        
         <div class="module-progress-bar">
-          <div class="module-progress-labels"><span>4 of 4 lessons completed</span><span>100%</span></div>
-          <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:100%"></div></div>
-        </div>
-        <div class="lessons-list" id="ll1">
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">How the Web Works</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>12 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">Setting Up Your Environment</div><div class="lesson-type">reading</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>8 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">Your First Webpage</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>15 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">Module Quiz</div><div class="lesson-type">quiz</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>10 min</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODULE 2 -->
-    <div class="module-wrap">
-      <div class="timeline-col">
-        <div class="module-dot completed">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-        </div>
-        <div class="timeline-line completed"></div>
-      </div>
-      <div class="module-card" id="mc2">
-        <button class="module-card-btn" onclick="toggleModule(2)">
-          <div class="module-card-info">
-            <div class="module-badge-row">
-              <span class="module-num-label completed">Module 2</span>
-              <span class="badge badge-success">Completed</span>
-            </div>
-            <div class="module-title">HTML Fundamentals</div>
-            <div class="module-desc">Master HTML structure, semantic elements, and accessibility best practices.</div>
+          <div class="module-progress-labels">
+            <span>0 of {{ $module->contents->count() }} lessons completed</span>
+            <span>0%</span>
           </div>
-          <span class="module-meta"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg> 1h 20min</span>
-          <svg class="chevron" id="chev2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7"/></svg>
-        </button>
-        <div class="module-progress-bar">
-          <div class="module-progress-labels"><span>5 of 5 lessons completed</span><span>100%</span></div>
-          <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:100%"></div></div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:0%"></div></div>
         </div>
-        <div class="lessons-list" id="ll2">
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">HTML Document Structure</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>18 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">Semantic HTML Elements</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>22 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">Forms and Inputs</div><div class="lesson-type">reading</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>15 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">Accessibility Basics</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>15 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">Module Quiz</div><div class="lesson-type">quiz</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>10 min</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODULE 3 (in-progress) -->
-    <div class="module-wrap">
-      <div class="timeline-col">
-        <div class="module-dot in-progress"><span>3</span></div>
-        <div class="timeline-line"></div>
-      </div>
-      <div class="module-card in-progress" id="mc3">
-        <button class="module-card-btn" onclick="toggleModule(3)">
-          <div class="module-card-info">
-            <div class="module-badge-row">
-              <span class="module-num-label in-progress">Module 3</span>
-              <span class="badge badge-primary">In Progress</span>
-            </div>
-            <div class="module-title">CSS Basics</div>
-            <div class="module-desc">Learn CSS fundamentals including selectors, box model, layouts, and modern styling techniques.</div>
-          </div>
-          <span class="module-meta"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg> 1h 45min</span>
-          <svg class="chevron open" id="chev3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7"/></svg>
-        </button>
-        <div class="module-progress-bar">
-          <div class="module-progress-labels"><span>2 of 6 lessons completed</span><span>33%</span></div>
-          <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:33%"></div></div>
-        </div>
-        <div class="lessons-list open" id="ll3">
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">CSS Selectors Deep Dive</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>20 min</div></div>
-          <div class="lesson-item"><div class="lesson-left"><div class="lesson-icon-wrap completed"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></div><div><div class="lesson-name">The Box Model</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>18 min</div></div>
+        
+        <div class="lessons-list" id="ll{{ $module->id }}">
+          @forelse($module->contents as $content)
           <div class="lesson-item">
             <div class="lesson-left">
               <div class="lesson-icon-wrap in-progress">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
               </div>
-              <div><div class="lesson-name">Flexbox Layout</div><div class="lesson-type">video</div></div>
+              <div>
+                <div class="lesson-name">{{ $content->title }}</div>
+                <div class="lesson-type">{{ $content->type ?? 'Materi' }}</div>
+              </div>
             </div>
-            <div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>25 min</div>
+            <div class="lesson-dur">
+                <a href="{{ $content->url ?? '#' }}" style="color:var(--primary); font-size: 12px; font-weight:600;">Buka Materi</a>
+            </div>
           </div>
-          <div class="lesson-item locked"><div class="lesson-left"><div class="lesson-icon-wrap locked"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div><div><div class="lesson-name">CSS Grid Fundamentals</div><div class="lesson-type">reading</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>20 min</div></div>
-          <div class="lesson-item locked"><div class="lesson-left"><div class="lesson-icon-wrap locked"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div><div><div class="lesson-name">Styling Best Practices</div><div class="lesson-type">video</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>12 min</div></div>
-          <div class="lesson-item locked"><div class="lesson-left"><div class="lesson-icon-wrap locked"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div><div><div class="lesson-name">Module Quiz</div><div class="lesson-type">quiz</div></div></div><div class="lesson-dur"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>10 min</div></div>
+          @empty
+          <div class="lesson-item">
+              <span style="font-size: 13px; color: var(--muted)">Belum ada materi di modul ini.</span>
+          </div>
+          @endforelse
         </div>
       </div>
     </div>
+    @endforeach
 
-    <!-- MODULE 4 -->
-    <div class="module-wrap">
-      <div class="timeline-col">
-        <div class="module-dot"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div>
-        <div class="timeline-line"></div>
-      </div>
-      <div class="module-card" id="mc4">
-        <button class="module-card-btn" disabled>
-          <div class="module-card-info">
-            <div class="module-badge-row"><span class="module-num-label">Module 4</span></div>
-            <div class="module-title locked">Responsive Design</div>
-            <div class="module-desc">Create websites that look great on any device using media queries and mobile-first design.</div>
-          </div>
-          <span class="module-meta"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg> 1h 30min</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- MODULE 5 -->
-    <div class="module-wrap">
-      <div class="timeline-col">
-        <div class="module-dot"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div>
-        <div class="timeline-line"></div>
-      </div>
-      <div class="module-card" id="mc5">
-        <button class="module-card-btn" disabled>
-          <div class="module-card-info">
-            <div class="module-badge-row"><span class="module-num-label">Module 5</span></div>
-            <div class="module-title locked">JavaScript Basics</div>
-            <div class="module-desc">Add interactivity to your websites with JavaScript fundamentals and DOM manipulation.</div>
-          </div>
-          <span class="module-meta"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg> 2h 15min</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- MODULE 6 -->
-    <div class="module-wrap">
-      <div class="timeline-col">
-        <div class="module-dot"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div>
-      </div>
-      <div class="module-card" id="mc6">
-        <button class="module-card-btn" disabled>
-          <div class="module-card-info">
-            <div class="module-badge-row"><span class="module-num-label">Module 6</span></div>
-            <div class="module-title locked">Final Project</div>
-            <div class="module-desc">Put it all together by building a complete responsive website from scratch.</div>
-          </div>
-          <span class="module-meta"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg> 1h 30min</span>
-        </button>
-      </div>
-    </div>
   </main>
 
-  <!-- SIDEBAR (desktop) -->
   <aside class="sidebar-col">
     <div class="card">
       <div class="card-header"><h3>Course Overview</h3></div>
       <div class="card-body">
         <div class="stat-row">
           <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg></div>
-          <div><div class="stat-label">32 Lessons</div><div class="stat-sub">6 modules</div></div>
+          <div><div class="stat-label">{{ $totalLessons }} Lessons</div><div class="stat-sub">{{ $totalModules }} modules</div></div>
         </div>
         <div class="stat-row">
           <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg></div>
-          <div><div class="stat-label">8h 45m</div><div class="stat-sub">Total duration</div></div>
+          <div><div class="stat-label">Point Sistem</div><div class="stat-sub">Selesaikan materi</div></div>
         </div>
         <div class="stat-row">
           <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></div>
-          <div><div class="stat-label">2 of 6</div><div class="stat-sub">Modules completed</div></div>
+          <div><div class="stat-label">0 of {{ $totalModules }}</div><div class="stat-sub">Modules completed</div></div>
         </div>
       </div>
     </div>
     <div class="card">
-      <div class="card-header"><h3>Instructor</h3></div>
+      <div class="card-header"><h3>Instruktur</h3></div>
       <div class="card-body">
         <div class="instructor-row">
           <div class="avatar"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg></div>
-          <div><div class="stat-label">Sarah Chen</div><div class="stat-sub">Senior Frontend Engineer</div></div>
+          <div><div class="stat-label">Admin Sistem</div><div class="stat-sub">Mentor</div></div>
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header"><h3>Certificate</h3></div>
-      <div class="card-body">
-        <div class="cert-row">
-          <div class="cert-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg></div>
-          <div class="cert-text">Earn a certificate of completion when you finish all modules.</div>
-        </div>
-      </div>
-    </div>
-    <button class="btn-complete" disabled>
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-      Mark Course Complete
-    </button>
   </aside>
 </div>
 
-<!-- MOBILE SIDEBAR -->
-<div class="mobile-sidebar">
-  <div style="display:flex;flex-direction:column;gap:16px;">
-    <div class="card">
-      <div class="card-header"><h3>Course Overview</h3></div>
-      <div class="card-body">
-        <div class="stat-row"><div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg></div><div><div class="stat-label">32 Lessons</div><div class="stat-sub">6 modules</div></div></div>
-        <div class="stat-row"><div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg></div><div><div class="stat-label">8h 45m</div><div class="stat-sub">Total duration</div></div></div>
-        <div class="stat-row"><div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></div><div><div class="stat-label">2 of 6</div><div class="stat-sub">Modules completed</div></div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><h3>Instructor</h3></div>
-      <div class="card-body"><div class="instructor-row"><div class="avatar"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg></div><div><div class="stat-label">Sarah Chen</div><div class="stat-sub">Senior Frontend Engineer</div></div></div></div>
-    </div>
-  </div>
-</div>
-
 <script>
-  function toggleModule(n) {
-    const ll = document.getElementById('ll' + n);
-    const chev = document.getElementById('chev' + n);
+  function toggleModule(id) {
+    const ll = document.getElementById('ll' + id);
+    const chev = document.getElementById('chev' + id);
     if (!ll) return;
     const isOpen = ll.classList.contains('open');
     ll.classList.toggle('open', !isOpen);

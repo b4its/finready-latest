@@ -8,6 +8,7 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -55,6 +56,12 @@ class UmkmPanelProvider extends PanelProvider
                 'panels::auth.login.form.after',
                 fn () => view('filament.hooks.halaman-utama-button'),
             )
+            ->navigationItems([
+                NavigationItem::make('Pembelajaran')
+                    ->url(fn () => route('learning.index'))
+                    ->icon('heroicon-o-book-open')
+                    ->sort(1),
+            ])
             ->widgets([
                 AccountWidget::class,
             ])

@@ -21,7 +21,7 @@ class AdminModuleContentResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'module_content';
-    protected static ?string $slug = 'module-content';
+    protected static ?string $slug = 'list-modul-konten';
 
     public static function form(Schema $schema): Schema
     {

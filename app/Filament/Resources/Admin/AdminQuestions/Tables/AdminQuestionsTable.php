@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmScores\Tables;
+namespace App\Filament\Resources\Admin\AdminQuestions\Tables;
 
-use App\Models\Score;
+use App\Models\Question;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class UmkmScoresTable
+class AdminQuestionsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->query(
-                Score::query()
-                    ->selectRaw('scores.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
+                Question::query()
+                    ->selectRaw('question.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
                     ->orderBy('created_at', 'desc') // urutkan tampilannya dari terbaru
             )
             ->columns([
@@ -26,25 +27,28 @@ class UmkmScoresTable
                     ->label('No')
                     ->sortable(),
                     
-                TextColumn::make('user.name')
-                    ->label('Nama Peserta')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('room.name')
                     ->label('Nama Room')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('score')
-                    ->label('Skor')
+                TextColumn::make('question')
+                    ->label('Pertanyaan')
                     ->searchable()
+                    ->html()
+                    ->limit(200)
+                    ->sortable(),
+                TextColumn::make('key_answer')
+                    ->label('Kunci Jawaban')
+                    ->searchable()
+                    ->limit(200)
                     ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make()
                     ->button()
