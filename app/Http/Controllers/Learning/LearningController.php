@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Learning;
 
 use App\Http\Controllers\Controller;
 use App\Models\Modul;
+use App\Models\ModuleContent;
+use App\Models\Room;
 use Illuminate\Http\Request;
 
 class LearningController extends Controller
@@ -24,6 +26,22 @@ class LearningController extends Controller
 
         // Kirim data ke view
         return view('learning.index_learning', compact('modules', 'totalModules', 'totalLessons'));
+    }
+
+    public function showQuiz($id)
+    {
+        // Ambil data room beserta soalnya, dan modul untuk breadcrumb
+        $room = Room::with(['questions', 'module'])->findOrFail($id);
+        
+        return view('learning.quiz', compact('room'));
+    }
+
+    public function showContent($id)
+    {
+        // Ambil data konten beserta relasi modulnya
+        $content = ModuleContent::with('module')->findOrFail($id);
+        
+        return view('learning.content', compact('content'));
     }
 
     /**

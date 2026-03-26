@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Master Web Development</title>
+  <title>Finready - Learning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -130,7 +130,7 @@
     [data-theme="dark"] .toggle-thumb { transform: translateX(14px); }
     .toggle-icon { width: 14px; height: 14px; }
 
-    /* HEADER ROW — Continue Learning aligned with Kembali */
+    /* HEADER ROW */
     .header-row {
       display: flex;
       align-items: flex-start;
@@ -564,10 +564,10 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         Kembali
       </a>
-      <button class="btn-continue">
+      {{-- <button class="btn-continue">
         Continue Learning
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
-      </button>
+      </button> --}}
     </div>
     
     <div class="header-row">
@@ -595,7 +595,6 @@
       <h2>Learning Path</h2>
       <span>{{ $totalModules }} modules</span>
     </div>
-
     @foreach($modules as $index => $module)
     <div class="module-wrap">
       <div class="timeline-col">
@@ -632,7 +631,7 @@
           <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:0%"></div></div>
         </div>
         
-        <div class="lessons-list" id="ll{{ $module->id }}">
+    <div class="lessons-list" id="ll{{ $module->id }}">
           @forelse($module->contents as $content)
           <div class="lesson-item">
             <div class="lesson-left">
@@ -645,18 +644,41 @@
               </div>
             </div>
             <div class="lesson-dur">
-                <a href="{{ $content->url ?? '#' }}" style="color:var(--primary); font-size: 12px; font-weight:600;">Buka Materi</a>
+                {{-- PERUBAHAN DI SINI: URL diarahkan ke route learning.content yang baru dibuat --}}
+                <a href="{{ route('learning.content', $content->id) }}" style="color:var(--primary); font-size: 12px; font-weight:600;">Buka Materi</a>
             </div>
           </div>
           @empty
-          <div class="lesson-item">
-              <span style="font-size: 13px; color: var(--muted)">Belum ada materi di modul ini.</span>
-          </div>
+            @if($module->rooms->isEmpty())
+                <div class="lesson-item">
+                    <span style="font-size: 13px; color: var(--muted)">Belum ada materi atau kuis di modul ini.</span>
+                </div>
+            @endif
           @endforelse
+
+          @foreach($module->rooms as $room)
+          {{-- PERUBAHAN DI SINI: Tailwind Utility Class diganti menggunakan CSS Variables bawaan --}}
+          <div class="lesson-item" style="background: var(--success-light);">
+            <div class="lesson-left">
+              <div class="lesson-icon-wrap" style="background: var(--success); color: #fff;">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width: 16px; height: 16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+              </div>
+              <div>
+                <div class="lesson-name" style="color: var(--success);">{{ $room->name }}</div>
+                <div class="lesson-type" style="color: var(--success);">Kuis ({{ $room->questions->count() }} Soal)</div>
+              </div>
+            </div>
+            <div class="lesson-dur">
+                <a href="{{ route('learning.quiz', $room->id) }}" style="color: var(--success); font-size: 12px; font-weight:700;">Mulai Kuis</a>
+            </div>
+          </div>
+          @endforeach
         </div>
+
       </div>
     </div>
     @endforeach
+
 
   </main>
 

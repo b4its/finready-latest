@@ -10,7 +10,9 @@ Route::get('/', function () {
 
 Route::prefix('learning')->group(function () {
     Route::controller(LearningController::class)->group(function () {
-        Route::get('/', 'index')->name('learning.index');      
+        Route::get('/', 'index')->name('learning.index');  
+        Route::get('/quiz/{id}', 'showQuiz')->name('learning.quiz');    
+        Route::get('/materi/{id}', 'showContent')->name('learning.content');
     });
 });
 

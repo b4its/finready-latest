@@ -11,7 +11,7 @@ class Modul extends Model
 {
     protected $table = 'modul';
 
-    // Relasi One-to-Many ke ModuleContent (Fixed: menggunakan idModule sesuai migration)
+    // Relasi One-to-Many ke ModuleContent 
     public function contents(): HasMany
     {
         return $this->hasMany(ModuleContent::class, 'idModule', 'id');
@@ -20,7 +20,7 @@ class Modul extends Model
     // Relasi One-to-Many ke Room
     public function rooms(): HasMany
     {
-        return $this->hasMany(Room::class, 'idModul', 'id');
+        return $this->hasMany(Room::class, 'idModule', 'id');
     }
 
     // Relasi One-to-Many ke LearnProgress
