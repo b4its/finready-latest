@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['idModule', 'title', 'content', 'type', 'url', 'document_json'])]
+#[Fillable(['idModule', 'title', 'content', 'type', 'url', 'is_question','document_json'])]
 class ModuleContent extends Model
 {
     protected $table = 'module_content';

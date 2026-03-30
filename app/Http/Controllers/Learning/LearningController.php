@@ -40,8 +40,10 @@ class LearningController extends Controller
     {
         // Ambil data konten beserta relasi modulnya
         $content = ModuleContent::with('module')->findOrFail($id);
+        $moduleContent_total = $content->count();
         
-        return view('learning.content', compact('content'));
+        $moduleKey = Modul::findOrFail($id);
+        return view('learning.content', compact('content', 'moduleKey', 'moduleContent_total'));
     }
 
     /**
