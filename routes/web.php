@@ -13,6 +13,7 @@ Route::prefix('learning')->group(function () {
         Route::get('/', 'index')->name('learning.index');  
         Route::get('/quiz/{id}', 'showQuiz')->name('learning.quiz');    
         Route::get('/materi/{id}', 'showContent')->name('learning.content');
+        Route::post('/materi/get-point', 'store')->name('learning.store');
     });
 });
 
