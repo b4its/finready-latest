@@ -37,37 +37,6 @@ class LearningController extends Controller
         ]
         );
     }
-
-    public function showQuiz($id)
-    {
-        // Ambil data room beserta soalnya, dan modul untuk breadcrumb
-        $room = Room::with(['questions', 'module'])->findOrFail($id);
-        
-        return view('learning.quiz', compact('room'));
-    }
-
-    public function showContent($id)
-    {
-        // 1. Ambil data konten berserta relasi modul (dan room jika butuh)
-        $content = ModuleContent::with(['module.contents', 'module.rooms'])->findOrFail($id);
-        $user_account = Auth::user();
-        // 2. Ambil modul utama dari relasi yang sudah didapat
-        $moduleKey = $content->module;
-        
-        // 3. Hitung jumlah KONTEN YANG ADA DI DALAM MODUL TERSEBUT saja
-        // Jika total konten = 0 (meski mustahil karena $content sudah ketemu 1), jadikan 1 agar tidak error 'Division by zero' di JS.
-        $moduleContent_total = $moduleKey->contents->count() ?: 1;
-        
-        return view('learning.content', 
-        [
-            'content'=> $content,
-            'moduleKey'=> $moduleKey,
-            'user_account'=> $user_account,
-            'moduleContent_total'=> $moduleContent_total,
-        
-        ]
-        );
-    }
     
     /**
      * Show the form for creating a new resource.
@@ -131,6 +100,25 @@ class LearningController extends Controller
     public function show(string $id)
     {
         //
+                // 1. Ambil data konten berserta relasi modul (dan room jika butuh)
+        $content = ModuleContent::with(['module.contents', 'module.rooms'])->findOrFail($id);
+        $user_account = Auth::user();
+        // 2. Ambil modul utama dari relasi yang sudah didapat
+        $moduleKey = $content->module;
+        
+        // 3. Hitung jumlah KONTEN YANG ADA DI DALAM MODUL TERSEBUT saja
+        // Jika total konten = 0 (meski mustahil karena $content sudah ketemu 1), jadikan 1 agar tidak error 'Division by zero' di JS.
+        $moduleContent_total = $moduleKey->contents->count() ?: 1;
+        
+        return view('learning.content', 
+        [
+            'content'=> $content,
+            'moduleKey'=> $moduleKey,
+            'user_account'=> $user_account,
+            'moduleContent_total'=> $moduleContent_total,
+        
+        ]
+        );
     }
 
     /**

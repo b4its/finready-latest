@@ -39,6 +39,7 @@ class AdminModulesTable
             ->filters([
                 //
             ])
+            ->emptyStateHeading('Tidak ada Data Modul')
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

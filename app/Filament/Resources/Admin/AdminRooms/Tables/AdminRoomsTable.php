@@ -41,6 +41,7 @@ class AdminRoomsTable
             ->filters([
                 //
             ])
+            ->emptyStateHeading('Tidak ada Data Room')
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

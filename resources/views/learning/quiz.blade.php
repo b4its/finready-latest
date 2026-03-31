@@ -156,6 +156,7 @@
           'code' => null, // Karena table question belum ada column 'code', saya set null default.
           'options' => [$q->optionA, $q->optionB, $q->optionC, $q->optionD],
           'answer' => $ansMap[$key] ?? 0,
+          'keyAnswer' => $key,
           'explanation' => 'Kunci jawaban yang benar adalah ' . $key . '.'
       ];
   });
@@ -314,7 +315,7 @@ function submitQuiz() {
       <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold ${ok?'bg-green-500 text-white':skip?'bg-[#e8e4dc] text-[#7a756b]':'bg-red-500 text-white'}">${ok?'✓':skip?'—':'✗'}</div>
       <div class="min-w-0">
         <p class="text-xs font-semibold text-[#1a1814]">Soal ${i+1}: ${q.text.slice(0,55)}${q.text.length>55?'…':''}</p>
-        <p class="text-xs text-[#7a756b] mt-0.5">${skip?'Tidak dijawab':'Jawaban: <b>'+q.options[ua]+'</b>'}${!ok&&!skip?' · Benar: <b class="text-green-600">'+q.options[q.answer]+'</b>':''}</p>
+        <p class="text-xs text-[#7a756b] mt-0.5">${skip?'Tidak dijawab':'Jawaban: <b>'+q.options[ua]+'</b>'}${!ok&&!skip?` · Benar: <b class="text-green-600">${q.keyAnswer} (${q.options[q.answer]})</b>`:''}</p>
       </div>
     </div>`;
   }).join('');

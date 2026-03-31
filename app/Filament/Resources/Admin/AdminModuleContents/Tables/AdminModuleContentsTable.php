@@ -49,6 +49,7 @@ class AdminModuleContentsTable
             ->filters([
                 //
             ])
+            ->emptyStateHeading('Tidak ada Data Modul Konten')
             ->recordActions([
                 // ACTION 1: View Detail
                 ViewAction::make()

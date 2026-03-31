@@ -340,7 +340,7 @@
           </div>
           @else
           {{-- TAMPILAN MATERI TERBUKA / SELESAI --}}
-          <a href="{{ route('learning.content', $content->id) }}" class="lesson-item">
+          <a href="{{ route('learning.show', $content->id) }}" class="lesson-item">
             <div class="lesson-left">
               <div class="lesson-icon-wrap {{ $isCompleted ? 'completed' : 'in-progress' }}">
                 @if($isCompleted)
@@ -403,7 +403,7 @@
               </div>
             </div>
             <div class="lesson-dur">
-                <a href="{{ route('learning.quiz', $room->id) }}" style="color: var(--success); font-size: 12px; font-weight:700;">Mulai Kuis</a>
+                <a href="{{ route('quiz.show', $room->id) }}" style="color: var(--success); font-size: 12px; font-weight:700;">Mulai Kuis</a>
             </div>
           </div>
           @endif

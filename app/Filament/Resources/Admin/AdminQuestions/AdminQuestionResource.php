@@ -41,6 +41,20 @@ class AdminQuestionResource extends Resource
         ];
     }
 
+    public static function getNavigationGroup(): string
+    {
+        return 'Kuis';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Pertanyaan';
+    }
+    public static function getNavigationIcon(): string
+    {
+        return 'heroicon-o-light-bulb';
+    }
+
     public static function getPages(): array
     {
         return [

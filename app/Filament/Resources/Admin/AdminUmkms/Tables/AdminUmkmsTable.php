@@ -1,55 +1,39 @@
 <?php
 
-namespace App\Filament\Resources\Admin\AdminQuestions\Tables;
+namespace App\Filament\Resources\Admin\AdminUmkms\Tables;
 
-use App\Models\Question;
+use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class AdminQuestionsTable
+class AdminUmkmsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->query(
-                Question::query()
-                    ->selectRaw('question.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
-                    ->orderBy('created_at', 'desc') // urutkan tampilannya dari terbaru
+                User::query()
+                    // Pastikan nama tabel 'users' sesuai migrasi
+                    ->selectRaw('users.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
+                    ->where('role', 'umkm') // Exclude super admin from the list
+                    ->orderBy('created_at', 'desc')
             )
             ->columns([
                 //
                 TextColumn::make('row_num')
                     ->label('No')
                     ->sortable(),
-                    
-                TextColumn::make('room.name')
-                    ->label('Nama Room')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('question')
-                    ->label('Pertanyaan')
-                    ->searchable()
-                    ->html()
-                    ->limit(200)
-                    ->sortable(),
-                TextColumn::make('key_answer')
-                    ->label('Kunci Jawaban')
-                    ->searchable()
-                    ->limit(200)
-                    ->sortable(),
+                TextColumn::make("name"),
+                TextColumn::make("email"),
             ])
             ->filters([
                 //
             ])
-            ->emptyStateHeading('Tidak ada Data Pertanyaan')
             ->recordActions([
-                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make()
                     ->button()
@@ -59,6 +43,7 @@ class AdminQuestionsTable
                     ->modalDescription('apakah yakin ingin menghapus data ini?')
                     ->modalSubmitActionLabel('Ya, Hapus'),
             ])
+            ->emptyStateHeading('Tidak ada Data Akun UMKM')
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

@@ -41,6 +41,11 @@ class AdminRoomResource extends Resource
         ];
     }
 
+    public static function getNavigationGroup(): string
+    {
+        return 'Kuis';
+    }
+
     public static function getNavigationLabel(): string
     {
         return 'Room';
@@ -48,7 +53,7 @@ class AdminRoomResource extends Resource
 
     public static function getNavigationIcon(): string
     {
-        return 'heroicon-o-building-office-2';
+        return 'heroicon-o-book-open';
     }
     
     public static function getPages(): array

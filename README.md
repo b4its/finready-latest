@@ -89,6 +89,11 @@ docker exec -it finready-php-fpm chmod -R 775 /var/www/html/storage /var/www/htm
 php artisan storage:link
 chown -R www-data:www-data /var/www/html/public/
 chmod -R 775 /var/www/html/public/
+
+docker exec path authority
+chown -R $USER:$USER .
+chown -R www-data:www-data /var/www/html/public/
+chmod -R 775 /var/www/html/public/
 # Berikan izin baca-tulis penuh
 ```
 ## License

@@ -40,6 +40,11 @@ class AdminModuleContentResource extends Resource
         ];
     }
 
+    public static function getNavigationGroup(): string
+    {
+        return 'Pembelajaran';
+    }
+
     public static function getNavigationLabel(): string
     {
         return 'Modul Konten';

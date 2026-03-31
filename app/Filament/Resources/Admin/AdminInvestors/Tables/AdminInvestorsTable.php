@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmScores\Tables;
+namespace App\Filament\Resources\Admin\AdminInvestors\Tables;
 
-use App\Models\Score;
+use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -10,40 +10,30 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class UmkmScoresTable
+class AdminInvestorsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->query(
-                Score::query()
-                    ->selectRaw('scores.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
-                    ->orderBy('created_at', 'desc') // urutkan tampilannya dari terbaru
+                User::query()
+                    // Pastikan nama tabel 'users' sesuai migrasi
+                    ->selectRaw('users.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
+                    ->where('role', 'investor') // Exclude super admin from the list
+                    ->orderBy('created_at', 'desc')
             )
             ->columns([
                 //
                 TextColumn::make('row_num')
                     ->label('No')
                     ->sortable(),
-                    
-                TextColumn::make('user.name')
-                    ->label('Nama Peserta')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('room.name')
-                    ->label('Nama Room')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('score')
-                    ->label('Skor')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make("name"),
+                TextColumn::make("email"),
             ])
             ->filters([
                 //
             ])
+            ->emptyStateHeading('Tidak ada Data AKun Investor')
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make()

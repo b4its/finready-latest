@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['idModule', 'name'])]
+#[Fillable(['idModule', 'name', 'duration'])]
 class Room extends Model
 {
     protected $table = 'room';
@@ -23,6 +23,7 @@ class Room extends Model
     {
         return $this->hasMany(Question::class, 'idRoom', 'id');
     }
+    
 
     // Relasi One-to-Many ke Score
     public function scores(): HasMany

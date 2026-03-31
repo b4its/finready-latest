@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('idModule')->nullable()->constrained('modul')->onDelete('cascade');
             $table->string('name')->nullable();
-            $table->integer('duration')->nullable();
+            $table->integer('duration')->default(0);
             $table->timestamps();
         });
     }

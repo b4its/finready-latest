@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['idUsers', 'idModul', 'idModulContent', 'title', 'type', 'contents', 'point'])]
+#[Fillable(['idUsers', 'idModul', 'idModulContent', 'idRoom','title', 'type', 'contents', 'point'])]
 class LearnProgress extends Model
 {
     protected $table = 'learn_progress';
@@ -21,6 +21,11 @@ class LearnProgress extends Model
     public function modul(): BelongsTo
     {
         return $this->belongsTo(Modul::class, 'idModul', 'id');
+    }
+
+    public function room(): BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'idRoom', 'id');
     }
 
     // Relasi Inverse ke ModuleContent

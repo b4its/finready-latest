@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmScores\Schemas;
+namespace App\Filament\Resources\Umkm\UmkmPoins\Schemas;
 
 use Filament\Schemas\Schema;
 
-class UmkmScoreForm
+class UmkmPoinForm
 {
     public static function configure(Schema $schema): Schema
     {

@@ -24,6 +24,11 @@ class AdminRoomForm
                     ->label('Room Name')
                     ->required()
                     ->maxLength(255),
+                
+                TextInput::make('duration')
+                    ->label('Durasi Waktu')
+                    ->numeric()
+                    ->required()
             ]);
     }
 }
