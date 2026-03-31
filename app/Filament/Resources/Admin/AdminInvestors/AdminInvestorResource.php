@@ -21,6 +21,8 @@ class AdminInvestorResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'users';
+    protected static ?string $title = 'Daftar Akun Investor';
+    protected static ?string $slug = 'akun-investor';
 
     public static function form(Schema $schema): Schema
     {

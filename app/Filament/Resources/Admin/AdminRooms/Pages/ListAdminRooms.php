@@ -8,13 +8,13 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListAdminRooms extends ListRecords
 {
-    protected static ?string $title = "Daftar Room";
+    protected static ?string $title = "Daftar Kuis";
     protected static string $resource = AdminRoomResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label("Tambahkan Room"),
+            CreateAction::make()->label("Tambahkan Kuis"),
         ];
     }
 }

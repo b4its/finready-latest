@@ -105,6 +105,7 @@ class LearningController extends Controller
         $user_account = Auth::user();
         // 2. Ambil modul utama dari relasi yang sudah didapat
         $moduleKey = $content->module;
+        $content_is_question = (isset($content->module->max_point) && $content->module->max_point > 0) ? 1 : 0;
         
         // 3. Hitung jumlah KONTEN YANG ADA DI DALAM MODUL TERSEBUT saja
         // Jika total konten = 0 (meski mustahil karena $content sudah ketemu 1), jadikan 1 agar tidak error 'Division by zero' di JS.
@@ -116,6 +117,7 @@ class LearningController extends Controller
             'moduleKey'=> $moduleKey,
             'user_account'=> $user_account,
             'moduleContent_total'=> $moduleContent_total,
+            'content_is_question' => $content_is_question
         
         ]
         );

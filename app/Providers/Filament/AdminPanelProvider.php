@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\Admin\AdminStatsOverview;
 use Blade;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -57,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
             )
             ->widgets([
                 AccountWidget::class,
+                AdminStatsOverview::class,
             ])
             ->middleware([
                 EncryptCookies::class,

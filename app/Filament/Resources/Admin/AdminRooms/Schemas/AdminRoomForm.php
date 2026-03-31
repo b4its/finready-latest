@@ -21,7 +21,7 @@ class AdminRoomForm
                     ->preload(),
 
                 TextInput::make('name')
-                    ->label('Room Name')
+                    ->label('Nama Kuis')
                     ->required()
                     ->maxLength(255),
                 

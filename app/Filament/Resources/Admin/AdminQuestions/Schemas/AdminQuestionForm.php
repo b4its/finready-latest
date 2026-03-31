@@ -15,7 +15,7 @@ class AdminQuestionForm
             ->components([
                 //
                 Select::make('idRoom')
-                    ->label('Nama Room')
+                    ->label('Nama Kuis')
                     ->relationship('room', 'name') // Mengambil relasi 'module' dan menampilkan kolom 'name'
                     ->required()
                     ->searchable()

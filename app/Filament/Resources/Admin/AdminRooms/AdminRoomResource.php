@@ -21,8 +21,8 @@ class AdminRoomResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'room';
-    protected static ?string $title = 'Room';
-    protected static ?string $slug = 'list-room';
+    protected static ?string $title = 'Kuis';
+    protected static ?string $slug = 'list-kuis';
 
     public static function form(Schema $schema): Schema
     {
@@ -48,7 +48,7 @@ class AdminRoomResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return 'Room';
+        return 'Kuis';
     }
 
     public static function getNavigationIcon(): string

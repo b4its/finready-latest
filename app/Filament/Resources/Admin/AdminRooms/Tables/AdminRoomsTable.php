@@ -33,7 +33,7 @@ class AdminRoomsTable
                     ->sortable(),
                 
                 TextColumn::make('name')
-                    ->label('Nama Room')
+                    ->label('Nama Kuis')
                     ->searchable()
                     ->sortable(),
 
@@ -41,7 +41,7 @@ class AdminRoomsTable
             ->filters([
                 //
             ])
-            ->emptyStateHeading('Tidak ada Data Room')
+            ->emptyStateHeading('Tidak ada Data Kuis')
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

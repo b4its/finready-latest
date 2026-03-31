@@ -481,7 +481,7 @@ const contentType = @json($content->type ?? 'text');
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 const userName = @json($user_account->name ?? 'Siswa');
 
-const isQuestion = {{ $content->is_question }};
+const isQuestion = {{ $content_is_question }};
 let isAlreadyCompleted = {{ in_array($content->id, $completedContentIds) ? 'true' : 'false' }};
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';

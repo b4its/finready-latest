@@ -18,7 +18,6 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->string('type')->nullable();
             $table->string('url')->nullable();
-            $table->tinyInteger('is_question')->default(0);
             $table->json('document_json')->nullable();
             $table->timestamps();
         });

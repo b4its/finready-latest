@@ -31,7 +31,7 @@ class InvestorPanelProvider extends PanelProvider
             ->path('investor')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Blue,
             ])
             ->userMenuItems([
                 'profile' => MenuItem::make()

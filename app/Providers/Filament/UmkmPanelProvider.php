@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\Admin\UmkmStatsOverview;
 use Blade;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -32,7 +33,7 @@ class UmkmPanelProvider extends PanelProvider
             ->path('umkm')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald,
             ])
             ->userMenuItems([
                 'profile' => MenuItem::make()
@@ -64,6 +65,7 @@ class UmkmPanelProvider extends PanelProvider
             ])
             ->widgets([
                 AccountWidget::class,
+                UmkmStatsOverview::class
             ])
             ->middleware([
                 EncryptCookies::class,
