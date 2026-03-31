@@ -49,15 +49,6 @@ class AdminModuleContentForm
                     ->label('Content')
                     ->columnSpanFull(),
 
-                Select::make('is_question')
-                            ->label('Pakai Pertanyaan?')
-                            ->options([
-                                1 => 'Pakai',
-                                0 => 'Tidak Pakai',
-                            ])
-                            ->required()
-                            ->live(), 
-
                 Repeater::make('document_json')
                     ->label('List Dokumen')
                     ->visible(fn (Get $get) => $get('type') !== 'video') 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets\Admin;
+namespace App\Filament\Widgets\Umkm;
 
 use App\Models\LearnProgress;
 use Filament\Widgets\StatsOverviewWidget;

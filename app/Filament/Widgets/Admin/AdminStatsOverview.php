@@ -52,12 +52,12 @@ class AdminStatsOverview extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-m-tag')
                 ->color('success'),
             
-            Stat::make('Total Investor', $total_investor_accounts)
-                ->description('Jumlah akun dengan role investor')
-                ->descriptionIcon('heroicon-m-users')
-                ->icon('heroicon-m-users')
-                ->color('success')
-                ->chart([7, 2, 10, 3, 15, 4, 17]),
+            // Stat::make('Total Investor', $total_investor_accounts)
+            //     ->description('Jumlah akun dengan role investor')
+            //     ->descriptionIcon('heroicon-m-users')
+            //     ->icon('heroicon-m-users')
+            //     ->color('success')
+            //     ->chart([7, 2, 10, 3, 15, 4, 17]),
         ];
     }
 }

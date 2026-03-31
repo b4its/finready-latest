@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\Admin\UmkmStatsOverview;
+use App\Filament\Widgets\Umkm\UmkmStatsOverview;
 use Blade;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
