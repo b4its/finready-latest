@@ -90,7 +90,7 @@ php artisan storage:link
 chown -R www-data:www-data /var/www/html/public/
 chmod -R 775 /var/www/html/public/
 
-docker exec path authority
+# docker exec path authority
 chown -R $USER:$USER .
 chown -R www-data:www-data /var/www/html/public/
 chmod -R 775 /var/www/html/public/
