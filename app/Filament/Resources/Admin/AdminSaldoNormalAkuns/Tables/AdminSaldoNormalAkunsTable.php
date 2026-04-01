@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Admin\AdminAkunKeuangans\Tables;
+namespace App\Filament\Resources\Admin\AdminSaldoNormalAkuns\Tables;
 
-use App\Models\AkunKeuangan;
+use App\Models\DetailAkunKeuangan;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -10,15 +10,15 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class AdminAkunKeuangansTable
+class AdminSaldoNormalAkunsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->query(
-                AkunKeuangan::query()
+                DetailAkunKeuangan::query()
                     // Pastikan nama tabel 'users' sesuai migrasi
-                    ->selectRaw('akun_keuangan.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
+                    ->selectRaw('detail_akun_keuangan.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
@@ -26,20 +26,36 @@ class AdminAkunKeuangansTable
                 TextColumn::make('row_num')
                     ->label('No')
                     ->sortable(),
-                TextColumn::make("no_referensi")
-                    ->label("No Referensi"),
-                    
-                TextColumn::make("name")
-                    ->label("Nama Akun"),
-                
 
-                TextColumn::make("category")
-                    ->label("Kategori"),
+                TextColumn::make('user.name')
+                    ->label('Nama Pengguna')
+                    ->searchable()
+                    ->sortable(),
+
+                // Menampilkan No Referensi dari relasi AkunKeuangan
+                TextColumn::make('akunKeuangan.no_referensi')
+                    ->label('No. Referensi')
+                    ->searchable()
+                    ->badge()
+                    ->color('info')
+                    ->sortable(),
+
+                // Diperbaiki dari details.name menjadi akunKeuangan.name sesuai nama relasi di Model
+                TextColumn::make('akunKeuangan.name')
+                    ->label('Nama Akun')
+                    ->searchable()
+                    ->sortable(),
+
+                // Menambahkan format mata uang Rupiah
+                TextColumn::make('nominal')
+                    ->label('Nominal')
+                    ->money('IDR', locale: 'id') 
+                    ->sortable(),
+
             ])
             ->filters([
                 //
             ])
-            ->emptyStateHeading('Tidak ada Data Akun Keuangan')
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make()

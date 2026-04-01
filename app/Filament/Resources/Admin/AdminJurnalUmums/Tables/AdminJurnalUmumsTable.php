@@ -27,25 +27,62 @@ class AdminJurnalUmumsTable
                     ->sortable(),
 
                     
-                TextColumn::make('no_referensi')
-                    ->label('No Referensi')
-                    ->sortable(),
+                TextColumn::make('periode')
+                    ->label('Tanggal')
+                    ->date('m/Y')
+                    ->sortable()
+                    ->searchable(),
 
-                TextColumn::make('user.name')
-                    ->label('Nama Pengguna')
-                    ->sortable(),
+                TextColumn::make('details.akunKeuangan.no_referensi')
+                    ->label('No. Referensi')
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('No. Referensi disalin!'),
 
-                TextColumn::make('akunKeuangan.name')
-                    ->label('Akun')
-                    ->sortable(),
+                TextColumn::make('keterangan')
+                    ->label('Keterangan')
+                    ->limit(50)
+                    ->searchable()
+                    ->wrap(),
 
-                TextColumn::make('kategori')
-                    ->label('Kategori')
-                    ->sortable(),
-                    
-                TextColumn::make('amount')
-                    ->label('Jumlah')
-                    ->sortable(),
+                TextColumn::make('metode_pembayaran')
+                    ->label('Metode')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Tunai' => 'success',
+                        'Kredit' => 'warning',
+                        'Transfer' => 'info',
+                        default => 'gray',
+                    }),
+
+                // Kalkulasi reaktif langsung di kolom tabel untuk Filament 5.x
+                TextColumn::make('total_debet')
+                    ->label('Total Debet')
+                    ->getStateUsing(fn (JurnalUmum $record): float => (float) $record->details->where('is_debet', 'D')->sum('amount'))
+                    ->money('IDR', locale: 'id')
+                    ->alignRight(),
+
+                TextColumn::make('total_kredit')
+                    ->label('Total Kredit')
+                    ->getStateUsing(fn (JurnalUmum $record): float => (float) $record->details->where('is_debet', 'K')->sum('amount'))
+                    ->money('IDR', locale: 'id')
+                    ->alignRight(),
+
+                TextColumn::make('status')
+                    ->label('Status Balance')
+                    ->getStateUsing(function (JurnalUmum $record) {
+                        $debet = $record->details->where('is_debet', 'D')->sum('amount');
+                        $kredit = $record->details->where('is_debet', 'K')->sum('amount');
+                        
+                        if ($debet === 0 && $kredit === 0) return 'Kosong';
+                        return $debet === $kredit ? 'Balance' : 'Tidak Balance';
+                    })
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Balance' => 'success',
+                        'Tidak Balance' => 'danger',
+                        'Kosong' => 'gray',
+                    }),
 
                 
             ])

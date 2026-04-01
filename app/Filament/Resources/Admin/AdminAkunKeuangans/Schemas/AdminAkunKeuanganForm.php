@@ -2,9 +2,16 @@
 
 namespace App\Filament\Resources\Admin\AdminAkunKeuangans\Schemas;
 
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Unique;
 
 class AdminAkunKeuanganForm
 {
@@ -12,38 +19,86 @@ class AdminAkunKeuanganForm
     {
         return $schema
             ->components([
-                //
-                TextInput::make("name")
-                    ->label("Nama Akun")
-                    ->required(),
+                Select::make('idUsers')
+                    ->label('Pilih Pengguna')
+                    ->relationship(
+                        name: 'user', 
+                        titleAttribute: 'name',
+                        // Filter: Hanya tampilkan user dengan role umkm
+                        modifyQueryUsing: fn ($query) => $query->where('role', 'umkm') 
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->live(),
+
                 Select::make('category')
-                            ->label('Kategori')
-                            ->options([
-                                "aset" => 'Aset',
-                                "pendapatan" => 'Pendapatan',
-                                "beban_biaya" => 'Beban atau Biaya',
-                                "modal" => 'Modal',
-                                "kewajiban" => 'Kewajiban',
-                                "other" => 'Pendapatan Lain Lain',
-                            ])
-                            ->required(),
+                    ->label('Kategori')
+                    ->options([
+                        "aset" => 'Aset',
+                        "pendapatan" => 'Pendapatan',
+                        "beban_biaya" => 'Beban atau Biaya',
+                        "modal" => 'Modal',
+                        "kewajiban" => 'Kewajiban',
+                        "lain-lain" => 'Pendapatan Lain Lain',
+                    ])
+                    ->required()
+                    ->unique(
+                        ignoreRecord: true,
+                        // Logika agar unique divalidasi berdasarkan user yang sedang login
+                        modifyRuleUsing: fn (Unique $rule) => $rule->where('idUsers', Auth::id())
+                    )
+                    ->validationMessages([
+                        'unique' => 'Kategori ini sudah Anda tambahkan sebelumnya. Silakan pilih kategori lain.',
+                    ])
+                    ->live(onBlur: false) // Eksekusi instan khas V5
+                    ->afterStateUpdated(function (Set $set, ?string $state) {
+                        if (!$state) {
+                            $set('no_referensi', null);
+                            return;
+                        }
 
-                Select::make('detail_category')
-                            ->label('Detail Kategori')
-                            ->options([
-                                "aset" => 'Aset Lancar',
-                                "aset_tetap" => 'Aset Tetap',
-                                "aset_tak_berwujud" => 'Aset Tak Berwujud',
-                                "kewajiban_jangka_pendek" => 'Kewajiban Jangka Pendek',
-                                "kewajiban_jangka_panjang" => 'Kewajiban Jangka Panjang',
-                                "modal" => 'Modal',
-                                "beban_biaya" => 'Beban atau Biaya',
-                                "kewajiban" => 'Kewajiban',
-                                "other" => 'Pendapatan Lain Lain',
-                            ])
-                            ->required()
+                        // Match expression yang dioptimalkan untuk Laravel 13/PHP 8.4+
+                        $prefix = match ($state) {
+                            'aset' => '1',
+                            'pendapatan' => '4',
+                            'beban_biaya' => '5',
+                            'modal' => '3',
+                            'kewajiban' => '2',
+                            'lain-lain' => '6',
+                            default => '0',
+                        };
 
-                            
+                        // Generate 4 angka random dengan format 0000 - 9999
+                        $set('no_referensi', sprintf('%s-%04d', $prefix, mt_rand(0, 9999)));
+                    }),
+
+                    Select::make('detail_category')
+                        ->label('Detail Kategori')
+                        ->options([
+                            'aset'                     => 'Aset Lancar',
+                            'aset_tetap'               => 'Aset Tetap',
+                            'aset_tak_berwujud'        => 'Aset Tak Berwujud',
+                            'kewajiban_jangka_pendek'  => 'Kewajiban Jangka Pendek',
+                            'kewajiban_jangka_panjang' => 'Kewajiban Jangka Panjang',
+                            'modal'                    => 'Modal',
+                            'beban_biaya'              => 'Beban atau Biaya',
+                            'kewajiban'                => 'Kewajiban',
+                            'pendapatan'               => 'Pendapatan',
+                            'lain-lain'                => 'Pendapatan Lain Lain',
+                        ])
+                        ->required(),
+
+                    TextInput::make('no_referensi')
+                        ->label('No. Referensi')
+                        ->required()
+                        ->readOnly()
+                        ->unique(ignoreRecord: true),
+
+                    TextInput::make('name')
+                        ->label('Nama Akun')
+                        ->required()
+                        ->maxLength(255),
+
             ]);
     }
 }

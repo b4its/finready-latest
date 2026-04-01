@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('akun_keuangan', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
+            $table->string('no_referensi', 20)->nullable();
             $table->string('name')->nullable();
             $table->string('category')->nullable();
             $table->string('detail_category')->nullable();

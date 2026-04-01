@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jurnal_umum', function (Blueprint $table) {
+        Schema::create('detail_akun_keuangan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('no_faktur')->nullable();
-            $table->date('periode')->nullable();
-            $table->string('metode_pembayaran')->nullable();
-            $table->string('lampiran')->nullable();
-            $table->text('keterangan')->nullable();
-            $table->text('keterangan_lain')->nullable();
-            $table->timestamps();   
+            $table->foreignId('idAkunKeuangan')->nullable()->constrained('akun_keuangan')->onDelete('cascade');
+            $table->decimal('nominal', 25, 2)->default(0);
+            $table->timestamps();
         });
     }
 
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jurnal_umum');
+        Schema::dropIfExists('detail_akun_keuangan');
     }
 };

@@ -2,14 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'category', 'detail_category'])]
-
+#[Fillable(['idUsers', 'no_referensi', 'name', 'category', 'detail_category'])]
 class AkunKeuangan extends Model
 {
-    //
-    protected $table = 'akun_keuangan'; // Deklarasi nama tabel karena singular
+    protected $table = 'akun_keuangan';
 
-    protected $fillable = ['name', 'category', 'detail_category'];
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'idUsers', 'id');
+    }
+
+    public function details(): HasMany
+    {
+        return $this->hasMany(DetailAkunKeuangan::class, 'idAkunKeuangan', 'id');
+    }
+
+    public function detailJurnal(): HasMany
+    {
+        return $this->hasMany(DetailJurnalUmum::class, 'idAkunKeuangan', 'id');
+    }
 }
