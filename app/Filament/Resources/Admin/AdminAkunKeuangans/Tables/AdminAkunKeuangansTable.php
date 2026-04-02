@@ -28,13 +28,22 @@ class AdminAkunKeuangansTable
                     ->sortable(),
                 TextColumn::make("no_referensi")
                     ->label("No Referensi"),
-                    
+
                 TextColumn::make("name")
-                    ->label("Nama Akun"),
+                    ->label("Nama Akun")
+                    ->searchable(),
                 
 
                 TextColumn::make("category")
-                    ->label("Kategori"),
+                    ->label("Kategori")
+                    ->formatStateUsing(fn (string $state): string => [
+                        "aset" => 'Aset',
+                        "pendapatan" => 'Pendapatan',
+                        "beban_biaya" => 'Beban atau Biaya',
+                        "modal" => 'Modal',
+                        "kewajiban" => 'Kewajiban',
+                        "lain-lain" => 'Pendapatan Lain Lain',
+                    ][$state] ?? $state),
             ])
             ->filters([
                 //

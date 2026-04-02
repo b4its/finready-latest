@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Admin\AdminJurnalUmums\Tables;
 
 use App\Models\JurnalUmum;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -38,12 +39,6 @@ class AdminJurnalUmumsTable
                     ->searchable()
                     ->copyable()
                     ->copyMessage('No. Referensi disalin!'),
-
-                TextColumn::make('keterangan')
-                    ->label('Keterangan')
-                    ->limit(50)
-                    ->searchable()
-                    ->wrap(),
 
                 TextColumn::make('metode_pembayaran')
                     ->label('Metode')
@@ -91,6 +86,13 @@ class AdminJurnalUmumsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make()
+                    ->button()
+                    ->color('danger') // default abu-abu (tidak merah)
+                    ->requiresConfirmation() // pastikan tampil popup konfirmasi
+                    ->modalHeading('Konfirmasi Hapus')
+                    ->modalDescription('apakah yakin ingin menghapus data ini?')
+                    ->modalSubmitActionLabel('Ya, Hapus'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
