@@ -55,10 +55,10 @@
     $flatPath = [];
     foreach($allModulesForPath as $mod) {
         foreach($mod->contents as $c) {
-            $flatPath[] = ['type' => 'content', 'id' => $c->id, 'url' => route('learning.content', $c->id)];
+            $flatPath[] = ['type' => 'content', 'id' => $c->id, 'url' => route('learning.show', $c->id)];
         }
         foreach($mod->rooms as $r) {
-            $flatPath[] = ['type' => 'quiz', 'id' => $r->id, 'url' => route('learning.quiz', $r->id)];
+            $flatPath[] = ['type' => 'quiz', 'id' => $r->id, 'url' => route('quiz.show', $r->id)];
         }
     }
 
@@ -283,7 +283,7 @@
             </div>
           </div>
           @else
-          <a href="{{ route('learning.content', $item->id) }}" class="toc-item {{ trim($itemClass) }}">
+          <a href="{{ route('learning.show', $item->id) }}" class="toc-item {{ trim($itemClass) }}">
             <div class="toc-status">
               @if($isCompleted)
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -317,7 +317,7 @@
                 </div>
               </div>
               @else
-              <a href="{{ route('learning.quiz', $room->id) }}" class="toc-item">
+              <a href="{{ route('quiz.show', $room->id) }}" class="toc-item">
                 <div class="toc-status"></div>
                 <div class="toc-text">
                   <div class="toc-name">{{ $room->name }}</div>

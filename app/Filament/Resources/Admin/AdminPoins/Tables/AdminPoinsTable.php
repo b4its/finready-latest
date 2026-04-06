@@ -27,7 +27,7 @@ class AdminPoinsTable
                     ->label('Nama Modul')
                     ->sortable(),
 
-                TextColumn::make('moduleContent.name')
+                TextColumn::make('moduleContent.title')
                     ->label('Nama Modul Konten')
                     ->sortable(),
 
