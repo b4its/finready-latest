@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('score', function (Blueprint $table) {
+        Schema::create('saldo_awal', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
-            $table->foreignId('idRoom')->nullable()->constrained('room')->onDelete('cascade');
-            $table->decimal('score', 8, 2)->default(0); 
-            $table->bigInteger('attempts')->default(1);
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('score');
+        Schema::dropIfExists('saldo_awal');
     }
 };

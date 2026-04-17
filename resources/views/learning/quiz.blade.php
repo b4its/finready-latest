@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Quiz: {{ $room->name }} — FinReady Learn</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* CSS TEMPLATE ANDA TETAP SAMA */
     body { font-family: 'DM Sans', sans-serif; background: #f7f6f3; }
     .option-card { position: relative; padding: 14px 16px 14px 50px; border: 2px solid #e8e4dc; border-radius: 12px; background: #fff; cursor: pointer; transition: all .18s ease; user-select: none; }
     .option-card:hover { border-color: #16a34a; background: #f0fdf4; }
@@ -69,17 +69,18 @@
 <div id="quizScreen" class="max-w-6xl mx-auto px-4 sm:px-5 py-6 pb-24">
   <div class="flex gap-5 items-start">
     <div class="flex-1 min-w-0">
+      <div class="mb-4 inline-flex px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full border border-blue-100">
+         Percobaan ke-{{ $attempts + 1 }}
+      </div>
+      
       <div id="questionWrap"></div>
+      
       <div class="flex items-center justify-between mt-6">
-        <button id="prevBtn" onclick="navigate(-1)"
-          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#e8e4dc] bg-white text-sm font-medium text-[#7a756b] hover:border-[#16a34a] hover:text-[#16a34a] transition disabled:opacity-40 disabled:cursor-not-allowed">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
-          Sebelumnya
+        <button id="prevBtn" onclick="navigate(-1)" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#e8e4dc] bg-white text-sm font-medium text-[#7a756b] hover:border-[#16a34a] hover:text-[#16a34a] transition disabled:opacity-40 disabled:cursor-not-allowed">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg> Sebelumnya
         </button>
-        <button id="nextBtn"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#16a34a] text-white text-sm font-semibold hover:bg-green-700 transition shadow-sm shadow-green-200">
-          Selanjutnya
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+        <button id="nextBtn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#16a34a] text-white text-sm font-semibold hover:bg-green-700 transition shadow-sm shadow-green-200">
+          Selanjutnya <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>
     </div>
@@ -93,10 +94,8 @@
           <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-md bg-[#f0fdf4] border border-[#86efac]"></div> Sudah dijawab</div>
           <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-md bg-white border-2 border-[#e8e4dc]"></div> Belum dijawab</div>
         </div>
-        <button id="submitBtnPanel" onclick="submitQuiz()"
-          class="hidden w-full mt-4 bg-[#16a34a] hover:bg-green-700 text-white font-semibold py-2.5 rounded-xl text-sm transition items-center justify-center gap-2 shadow-sm shadow-green-200">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-          Kumpulkan
+        <button id="submitBtnPanel" onclick="submitQuiz()" class="hidden w-full mt-4 bg-[#16a34a] hover:bg-green-700 text-white font-semibold py-2.5 rounded-xl text-sm transition items-center justify-center gap-2 shadow-sm shadow-green-200">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg> Kumpulkan
         </button>
         <div class="mt-3 text-center"><span id="answeredCount" class="text-xs text-[#7a756b]">0 dari {{ $room->questions->count() }} dijawab</span></div>
       </div>
@@ -106,8 +105,7 @@
 
 <div id="mobileSubmit" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-40">
   <button onclick="submitQuiz()" class="inline-flex items-center gap-2 px-7 py-3 bg-[#16a34a] text-white font-semibold rounded-2xl shadow-lg shadow-green-300 text-sm hover:bg-green-700 transition">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-    Kumpulkan Quiz
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg> Kumpulkan Quiz
   </button>
 </div>
 
@@ -153,7 +151,7 @@
       $key = strtoupper(trim($q->key_answer));
       return [
           'text' => $q->question,
-          'code' => null, // Karena table question belum ada column 'code', saya set null default.
+          'code' => null, 
           'options' => [$q->optionA, $q->optionB, $q->optionC, $q->optionD],
           'answer' => $ansMap[$key] ?? 0,
           'keyAnswer' => $key,
@@ -163,8 +161,14 @@
 @endphp
 
 <script>
-// Array JSON hasil parse langsung dari Backend Laravel!
 const questions = {!! json_encode($jsQuestions) !!};
+const roomId = {{ $room->id }};
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+// Logika untuk menampilkan kunci (Attempts >= 5)
+// Attempts berbasis 0 untuk perhitungan, jadi jika di database tercatat 4 kali, yang sekarang adalah ke-5.
+const attemptsDb = {{ $attempts ?? 0 }};
+const showKey = attemptsDb >= 4; // Artinya percobaan ke-5 dan seterusnya
 
 let cur = 0;
 let answers = new Array(questions.length).fill(null);
@@ -172,7 +176,6 @@ let timerSec = 15 * 60;
 let timerInt = null;
 let startTime = Date.now();
 
-// Sisanya sama dengan Script Anda 
 document.getElementById('qTotal').textContent = questions.length;
 buildDots();
 if(questions.length > 0) { renderQ(0); startTimer(); } else { document.getElementById('questionWrap').innerHTML = "<p class='p-5'>Belum ada soal.</p>"; }
@@ -193,19 +196,28 @@ function renderQ(idx) {
   const q = questions[idx];
   const wrap = document.getElementById('questionWrap');
   const codeBlock = q.code ? '<pre class="bg-[#1e293b] text-[#86efac] rounded-xl p-4 text-sm font-mono leading-relaxed overflow-x-auto mt-3"><code>'+escHtml(q.code)+'</code></pre>' : '';
+  
   const opts = q.options.map((o,i) => {
     const ua = answers[idx];
     let cls = '';
+    
+    // Logika pewarnaan card berdasarkan showKey
     if (ua !== null) {
-      if (i === q.answer) cls = 'reveal-correct'; else if (i === ua) cls = 'wrong';
-    } else if (i === ua) cls = 'selected';
+      if (showKey) {
+        if (i === q.answer) cls = 'reveal-correct'; 
+        else if (i === ua) cls = 'wrong';
+      } else {
+        if (i === ua) cls = 'selected';
+      }
+    }
+    
     return `<div class="option-card ${cls}" onclick="selectAnswer(${i})" id="opt${i}">
       <span class="option-letter">${String.fromCharCode(65+i)}</span>
       <span class="text-sm text-[#1a1814] leading-snug">${o}</span>
     </div>`;
   }).join('');
 
-  const expShow = answers[idx] !== null;
+  const expShow = answers[idx] !== null && showKey;
   wrap.innerHTML = `<div class="q-enter">
     <div class="flex items-center gap-2 mb-4">
       <span class="px-3 py-1 bg-[#16a34a]/10 text-[#16a34a] text-xs font-bold rounded-full">Soal ${idx+1}</span>
@@ -221,18 +233,40 @@ function renderQ(idx) {
 }
 
 function selectAnswer(i) {
-  if (answers[cur] !== null) return; 
+  // Opsi: Jika showKey (attempts >= 5) sudah aktif dan jawaban diklik, 
+  // kita kunci agar tidak bisa diubah karena jawaban yang benar sudah terungkap.
+  // Namun jika showKey false (percobaan 1-4), user BEBAS mengubah jawaban.
+  if (showKey && answers[cur] !== null) return; 
+
+  // Simpan jawaban baru
   answers[cur] = i;
   const q = questions[cur];
+  
   q.options.forEach((_,j) => {
     const el = document.getElementById('opt'+j);
     if (!el) return;
-    if (j === q.answer) el.className = 'option-card reveal-correct';
-    else if (j === i) el.className = 'option-card wrong';
+    
+    // 1. Reset semua class ke default (hapus warna hijau/merah/selected dari pilihan sebelumnya)
+    el.className = 'option-card';
+    
+    // 2. Terapkan ulang class sesuai jawaban yang baru dipilih
+    if (showKey) {
+      if (j === q.answer) el.className = 'option-card reveal-correct';
+      else if (j === i) el.className = 'option-card wrong';
+    } else {
+      if (j === i) el.className = 'option-card selected';
+    }
   });
-  const exp = document.getElementById('expBox');
-  exp.className = 'mt-3 p-3.5 rounded-xl border-l-4 border-[#16a34a] bg-[#f0fdf4] text-sm text-[#166534] leading-relaxed';
-  exp.textContent = '💡 ' + q.explanation;
+
+  // Tampilkan kotak penjelasan jika showKey aktif
+  if (showKey) {
+    const exp = document.getElementById('expBox');
+    exp.classList.remove('hidden');
+    exp.className = 'mt-3 p-3.5 rounded-xl border-l-4 border-[#16a34a] bg-[#f0fdf4] text-sm text-[#166534] leading-relaxed';
+    exp.textContent = '💡 ' + q.explanation;
+  }
+  
+  // Perbarui indikator UI lainnya
   updateDots(); updateAnsweredCount(); updateNavBtns();
 }
 
@@ -293,6 +327,23 @@ function submitQuiz() {
   const skip    = answers.filter(a => a === null).length;
   const pct     = questions.length > 0 ? Math.round(correct/questions.length*100) : 0;
 
+  // ==== API CALL BACKEND ====
+  // Mengirim data score untuk disimpan ke tabel Score dan LearnProgress
+  fetch(`/kuis/${roomId}/submit`, {
+      method: 'POST',
+      headers: {
+          'X-CSRF-TOKEN': csrfToken,
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          correct_answers: correct,
+          total_questions: questions.length,
+          score_percentage: pct
+      })
+  }).then(res => res.json())
+    .then(data => console.log('Skor berhasil disimpan:', data))
+    .catch(err => console.error('Gagal menyimpan skor:', err));
+
   document.getElementById('scorePct').textContent    = pct+'%';
   document.getElementById('statCorrect').textContent = correct;
   document.getElementById('statWrong').textContent   = wrong;
@@ -310,12 +361,15 @@ function submitQuiz() {
   document.getElementById('resultSub').textContent   = g.s;
 
   document.getElementById('reviewList').innerHTML = questions.map((q,i) => {
-    const ua = answers[i], ok = ua === q.answer, skip = ua === null;
-    return `<div class="flex items-start gap-3 p-3 rounded-xl ${ok?'bg-[#f0fdf4] border border-[#bbf7d0]':skip?'bg-[#f7f6f3] border border-[#e8e4dc]':'bg-red-50 border border-red-100'}">
-      <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold ${ok?'bg-green-500 text-white':skip?'bg-[#e8e4dc] text-[#7a756b]':'bg-red-500 text-white'}">${ok?'✓':skip?'—':'✗'}</div>
+    const ua = answers[i], ok = ua === q.answer, skipped = ua === null;
+    return `<div class="flex items-start gap-3 p-3 rounded-xl ${ok?'bg-[#f0fdf4] border border-[#bbf7d0]':skipped?'bg-[#f7f6f3] border border-[#e8e4dc]':'bg-red-50 border border-red-100'}">
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold ${ok?'bg-green-500 text-white':skipped?'bg-[#e8e4dc] text-[#7a756b]':'bg-red-500 text-white'}">${ok?'✓':skipped?'—':'✗'}</div>
       <div class="min-w-0">
         <p class="text-xs font-semibold text-[#1a1814]">Soal ${i+1}: ${q.text.slice(0,55)}${q.text.length>55?'…':''}</p>
-        <p class="text-xs text-[#7a756b] mt-0.5">${skip?'Tidak dijawab':'Jawaban: <b>'+q.options[ua]+'</b>'}${!ok&&!skip?` · Benar: <b class="text-green-600">${q.keyAnswer} (${q.options[q.answer]})</b>`:''}</p>
+        <p class="text-xs text-[#7a756b] mt-0.5">
+          ${skipped ? 'Tidak dijawab' : 'Jawaban Anda: <b>'+q.options[ua]+'</b>'}
+          ${!ok && !skipped && showKey ? `<br>Benar: <b class="text-green-600">${q.keyAnswer} (${q.options[q.answer]})</b>` : ''}
+        </p>
       </div>
     </div>`;
   }).join('');
@@ -331,26 +385,11 @@ function submitQuiz() {
   }, 120);
 
   if (pct >= 70) fireworks(pct);
-
-  // === INFO ===
-  // Jika Anda ingin menyimpan skor ini ke database Tabel Score, 
-  // buat route POST baru di web.php dan jalankan Fetch API / Axios di blok ini.
-  // Contoh:
-  // fetch('/learning/submit-score', { 
-  //     method: 'POST', 
-  //     headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json'},
-  //     body: JSON.stringify({ room_id: {{ $room->id }}, score: pct })
-  // });
 }
 
 function restartQuiz() {
-  cur = 0; answers = new Array(questions.length).fill(null); timerSec = 15*60; startTime = Date.now();
-  document.getElementById('resultScreen').classList.add('hidden');
-  document.getElementById('quizScreen').style.display = 'block';
-  const td = document.getElementById('timerDisplay');
-  td.classList.remove('timer-warn'); td.textContent = '15:00';
-  document.getElementById('timerIcon').setAttribute('stroke','#7a756b');
-  buildDots(); renderQ(0); startTimer();
+  // Reload halaman untuk mereset dan memanggil database guna mengambil attempts terbaru
+  window.location.reload();
 }
 
 // Visual Effects

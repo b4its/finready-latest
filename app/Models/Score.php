@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['idUsers', 'idRoom', 'score'])]
+#[Fillable(['idUsers', 'idRoom', 'score', 'attempts'])]
 class Score extends Model
 {
     protected $table = 'score';

@@ -722,8 +722,8 @@ function triggerCompletionAlert() {
   if (isAlreadyCompleted || completedDocs.has(activeDocIdx)) return;
   completedDocs.add(activeDocIdx);
 
-  let item_score = {{ $moduleKey->max_point ?? 0 }} / {{ $moduleContent_total }};
-  item_score = Math.round(item_score); 
+  let item_score = ({{ $moduleKey->max_point ?? 0 }} / {{ $moduleContent_total }})/0.2;
+  item_score = item_score; 
   
   if (isQuestion == 1) {
     Swal.fire({

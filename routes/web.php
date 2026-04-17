@@ -19,7 +19,8 @@ Route::prefix('learning')->group(function () {
 
 Route::prefix('kuis')->group(function () {
     Route::controller(QuizController::class)->group(function () {
-        Route::get('{id}', 'show')->name('quiz.show');    
+        Route::get('{id}', 'show')->name('quiz.show');
+        Route::post('{id}/submit', 'submitScore')->name('quiz.submit');
     });
 });
 

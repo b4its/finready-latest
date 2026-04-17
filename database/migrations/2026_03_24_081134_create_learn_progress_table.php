@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('type')->nullable();
             $table->text('contents')->nullable();
-            $table->bigInteger('point')->default(1);
+            $table->decimal('point', 8, 2)->default(0); 
             $table->timestamps();
         });
     }
