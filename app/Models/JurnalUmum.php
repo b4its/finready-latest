@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['idUsers', 'idAkunKeuangan', 'periode', 'lampiran', 'keterangan', 'keterangan_lain'])]
+#[Fillable(['idUsers', 'idAkunKeuangan', 'periode', 'lampiran', 'keterangan', 'keterangan_lain', 'tipe'])]
 class JurnalUmum extends Model
 {
     protected $table = 'jurnal_umum';

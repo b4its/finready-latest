@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\Umkm\UmkmAkunKeuangans\UmkmAkunKeuanganResource;
+use App\Filament\Resources\Umkm\UmkmPoins\UmkmPoinResource;
+use App\Filament\Resources\Umkm\UmkmSaldoAwals\UmkmSaldoAwalResource;
+use App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\UmkmSifatAkunKeuanganResource;
 use App\Filament\Widgets\Umkm\UmkmStatsOverview;
 use Blade;
 use Filament\Http\Middleware\Authenticate;
@@ -9,6 +13,8 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
@@ -57,12 +63,28 @@ class UmkmPanelProvider extends PanelProvider
                 'panels::auth.login.form.after',
                 fn () => view('filament.hooks.halaman-utama-button'),
             )
-            ->navigationItems([
-                NavigationItem::make('Pembelajaran')
-                    ->url(fn () => route('learning.index'))
-                    ->icon('heroicon-o-book-open')
-                    ->sort(1),
-            ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder
+                    ->items([
+                        // 1. Dashboard selalu di atas
+                        ...Dashboard::getNavigationItems(),
+                        ...UmkmPoinResource::getNavigationItems(),
+                            NavigationItem::make('Pembelajaran')
+                            ->url(fn () => route('learning.index'))
+                            ->icon('heroicon-o-book-open')
+                            ->sort(1),
+                    ])
+                    ->groups([
+                        // 2. Grup Akun di urutan kedua
+                        NavigationGroup::make('Praktek Keuangan')
+                            ->items([
+                                ...UmkmAkunKeuanganResource::getNavigationItems(),
+                                ...UmkmSifatAkunKeuanganResource::getNavigationItems(),
+                                ...UmkmSaldoAwalResource::getNavigationItems(),
+                                ]),
+                        
+                    ]);
+            })
             ->widgets([
                 AccountWidget::class,
                 UmkmStatsOverview::class

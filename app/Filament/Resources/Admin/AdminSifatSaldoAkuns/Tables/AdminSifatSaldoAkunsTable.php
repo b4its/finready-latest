@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Admin\AdminSaldoNormalAkuns\Tables;
+namespace App\Filament\Resources\Admin\AdminSifatSaldoAkuns\Tables;
 
 use App\Models\DetailAkunKeuangan;
 use Filament\Actions\BulkActionGroup;
@@ -10,9 +10,9 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class AdminSaldoNormalAkunsTable
+class AdminSifatSaldoAkunsTable
 {
-    public static function configure(Table $table): Table
+public static function configure(Table $table): Table
     {
         return $table
             ->query(
@@ -23,8 +23,11 @@ class AdminSaldoNormalAkunsTable
             )
             ->columns([
                 //
-                TextColumn::make('row_num')
-                    ->label('No')
+                TextColumn::make('akunKeuangan.no_referensi')
+                    ->label('No. Referensi')
+                    ->searchable()
+                    ->badge()
+                    ->color('info')
                     ->sortable(),
 
                 TextColumn::make('user.name')
@@ -34,12 +37,6 @@ class AdminSaldoNormalAkunsTable
                     ->sortable(),
 
                 // Menampilkan No Referensi dari relasi AkunKeuangan
-                TextColumn::make('akunKeuangan.no_referensi')
-                    ->label('No. Referensi')
-                    ->searchable()
-                    ->badge()
-                    ->color('info')
-                    ->sortable(),
 
                 // Diperbaiki dari details.name menjadi akunKeuangan.name sesuai nama relasi di Model
                 TextColumn::make('akunKeuangan.name')

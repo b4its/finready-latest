@@ -2,6 +2,17 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\Admin\AdminAkunKeuangans\AdminAkunKeuanganResource;
+use App\Filament\Resources\Admin\AdminInvestors\AdminInvestorResource;
+use App\Filament\Resources\Admin\AdminJurnalUmums\AdminJurnalUmumResource;
+use App\Filament\Resources\Admin\AdminModuleContents\AdminModuleContentResource;
+use App\Filament\Resources\Admin\AdminModules\AdminModuleResource;
+use App\Filament\Resources\Admin\AdminPoins\AdminPoinResource;
+use App\Filament\Resources\Admin\AdminQuestions\AdminQuestionResource;
+use App\Filament\Resources\Admin\AdminRooms\AdminRoomResource;
+use App\Filament\Resources\Admin\AdminSaldoAwals\AdminSaldoAwalResource;
+use App\Filament\Resources\Admin\AdminSifatSaldoAkuns\AdminSifatSaldoAkunResource;
+use App\Filament\Resources\Admin\AdminUmkms\AdminUmkmResource;
 use App\Filament\Widgets\Admin\AdminStatsOverview;
 use Blade;
 use Filament\Http\Middleware\Authenticate;
@@ -9,6 +20,8 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -56,6 +69,41 @@ class AdminPanelProvider extends PanelProvider
                 'panels::auth.login.form.after',
                 fn () => view('filament.hooks.halaman-utama-button'),
             )
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder
+                    ->items([
+                        // 1. Dashboard selalu di atas
+                        ...Dashboard::getNavigationItems(),
+                        ...AdminPoinResource::getNavigationItems(),
+                    ])
+                    ->groups([
+                        // 2. Grup Akun di urutan kedua
+                        NavigationGroup::make('Akun')
+                            ->items([
+                                ...AdminInvestorResource::getNavigationItems(),
+                                ...AdminUmkmResource::getNavigationItems(),
+                            ]),
+                        NavigationGroup::make('Pembelajaran')
+                            ->items([
+                                ...AdminModuleResource::getNavigationItems(),
+                                ...AdminModuleContentResource::getNavigationItems(),
+                            ]),
+                        NavigationGroup::make('Kuis')
+                            ->items([
+                                ...AdminRoomResource::getNavigationItems(),
+                                ...AdminQuestionResource::getNavigationItems(),
+                            ]),
+                        
+                        // 3. Grup Kosong (tanpa label) di urutan terbawah
+                        NavigationGroup::make('Keuangan') 
+                            ->items([
+                                ...AdminAkunKeuanganResource::getNavigationItems(),
+                                ...AdminSifatSaldoAkunResource::getNavigationItems(),
+                                ...AdminSaldoAwalResource::getNavigationItems(),
+                                ...AdminJurnalUmumResource::getNavigationItems(),
+                            ]),
+                    ]);
+            })
             ->widgets([
                 AccountWidget::class,
                 AdminStatsOverview::class,

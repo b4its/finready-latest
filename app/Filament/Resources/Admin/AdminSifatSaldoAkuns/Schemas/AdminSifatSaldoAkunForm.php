@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Filament\Resources\Admin\AdminSaldoNormalAkuns\Schemas;
+namespace App\Filament\Resources\Admin\AdminSifatSaldoAkuns\Schemas;
+
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -10,7 +11,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
 
-class AdminSaldoNormalAkunForm
+
+class AdminSifatSaldoAkunForm
 {
     public static function configure(Schema $schema): Schema
     {

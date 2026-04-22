@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['idUsers', 'no_referensi', 'name', 'category', 'detail_category'])]
+#[Fillable(['idUsers', 'no_referensi', 'name', 'category', 'detail_category', 'tipe'])]
 class AkunKeuangan extends Model
 {
     protected $table = 'akun_keuangan';

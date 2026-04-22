@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('category')->nullable();
             $table->string('detail_category')->nullable();
+            $table->tinyInteger('tipe')->default(0)->comment("1. Referensi, 2. Praktek, 3. Akun Riil");
             $table->timestamps();
         });
     }

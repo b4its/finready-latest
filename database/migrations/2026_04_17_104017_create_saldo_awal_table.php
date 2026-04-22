@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('idDetailAkunKeuangan')->nullable()->constrained('detail_akun_keuangan')->onDelete('cascade');
             $table->decimal('debet', 25, 2)->default(0);
             $table->decimal('kredit', 25, 2)->default(0);
+            $table->tinyInteger('tipe')->default(0)->comment("1. Referensi, 2. Praktek, 3. Akun Riil");
             $table->timestamps();
         });
     }
