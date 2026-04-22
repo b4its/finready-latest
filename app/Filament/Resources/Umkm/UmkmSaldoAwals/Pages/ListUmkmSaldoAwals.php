@@ -14,7 +14,11 @@ class ListUmkmSaldoAwals extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label("Tambahkan Saldo Awal"),
+            CreateAction::make()->label("Tambahkan Saldo Awal")
+            ->mutateFormDataUsing(function (array $data): array {
+                    $data['tipe'] = 2;
+                    return $data;
+                }),
         ];
     }
 }

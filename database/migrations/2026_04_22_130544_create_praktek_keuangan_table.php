@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detail_akun_keuangan', function (Blueprint $table) {
+        Schema::create('praktek_keuangan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('idAkunKeuangan')->nullable()->constrained('akun_keuangan')->onDelete('cascade');
-            $table->char('is_debet', 1)->nullable()->comment("D: Debet| K: Kredit");
-            $table->tinyInteger('tipe')->default(0)->comment("1. Referensi, 2. Praktek, 3. Akun Riil");
+            $table->foreignId('idJurnalUmum')->nullable()->constrained('jurnal_umum')->onDelete('cascade');
+            $table->string('table_name')->nullable();
+            $table->string('title')->nullable();
+            $table->string('answer')->nullable();
+            $table->tinyInteger('status_answer')->default(0)->comment("0. salah, 1. benar");
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detail_akun_keuangan');
+        Schema::dropIfExists('praktek_keuangan');
     }
 };

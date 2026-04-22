@@ -13,7 +13,11 @@ class ListUmkmAkunKeuangans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label("Tambahkan Akun Keuangan"),
+            CreateAction::make()->label("Tambahkan Akun Keuangan")
+            ->mutateFormDataUsing(function (array $data): array {
+                    $data['tipe'] = 2;
+                    return $data;
+                }),
         ];
     }
 }

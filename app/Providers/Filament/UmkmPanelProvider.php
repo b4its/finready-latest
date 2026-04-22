@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Umkm\UmkmAkunKeuangans\UmkmAkunKeuanganResource;
+use App\Filament\Resources\Umkm\UmkmJurnalUmums\UmkmJurnalUmumResource;
 use App\Filament\Resources\Umkm\UmkmPoins\UmkmPoinResource;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\UmkmSaldoAwalResource;
 use App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\UmkmSifatAkunKeuanganResource;
@@ -81,12 +82,12 @@ class UmkmPanelProvider extends PanelProvider
                                 ...UmkmAkunKeuanganResource::getNavigationItems(),
                                 ...UmkmSifatAkunKeuanganResource::getNavigationItems(),
                                 ...UmkmSaldoAwalResource::getNavigationItems(),
+                                ...UmkmJurnalUmumResource::getNavigationItems(),
                                 ]),
                         
                     ]);
             })
             ->widgets([
-                AccountWidget::class,
                 UmkmStatsOverview::class
             ])
             ->middleware([
