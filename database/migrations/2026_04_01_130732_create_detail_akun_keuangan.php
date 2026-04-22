@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('idAkunKeuangan')->nullable()->constrained('akun_keuangan')->onDelete('cascade');
-            $table->decimal('nominal', 25, 2)->default(0);
+            $table->char('is_debet', 1)->nullable()->comment("D: Debet| K: Kredit");
             $table->timestamps();
         });
     }

@@ -1,33 +1,21 @@
 <?php
 
-namespace App\Filament\Resources\Admin\AdminSaldoNormalAkuns\Schemas;
+namespace App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\Schemas;
 
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
-class AdminSaldoNormalAkunForm
+class UmkmSifatAkunKeuanganForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                //
-                Select::make('idUsers')
-                    ->label('Pilih Pengguna')
-                    ->relationship(
-                        name: 'user', 
-                        titleAttribute: 'name',
-                        // Filter: Hanya tampilkan user dengan role umkm
-                        modifyQueryUsing: fn ($query) => $query->where('role', 'umkm') 
-                    )
-                    ->searchable()
-                    ->preload()
-                    ->live(),
+                Hidden::make('idUsers')
+                    ->default(Auth::user()->id),
 
                 Select::make('idAkunKeuangan')
                     ->relationship('akunKeuangan', 'name')

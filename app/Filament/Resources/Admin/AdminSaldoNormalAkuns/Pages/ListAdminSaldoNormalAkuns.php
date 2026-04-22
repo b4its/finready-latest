@@ -8,13 +8,13 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListAdminSaldoNormalAkuns extends ListRecords
 {
-    protected static ?string $title = "Daftar Saldo Normal Akun";
+    protected static ?string $title = "Daftar Sifat Akun Keuangan";
     protected static string $resource = AdminSaldoNormalAkunResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label("Tambahkan Saldo Normal Akun"),
+            CreateAction::make()->label("Tambahkan Sifat Akun Keuangan"),
         ];
     }
 }

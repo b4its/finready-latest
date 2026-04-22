@@ -34,13 +34,13 @@ class AdminJurnalUmumsTable
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('details.akunKeuangan.no_referensi')
+                TextColumn::make('akunKeuangan.no_referensi')
                     ->label('No. Referensi')
                     ->searchable()
                     ->copyable()
                     ->copyMessage('No. Referensi disalin!'),
 
-                TextColumn::make('metode_pembayaran')
+                TextColumn::make('details.metode_pembayaran')
                     ->label('Metode')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {

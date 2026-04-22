@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Admin\AdminSaldoNormalAkuns\Tables;
+namespace App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\Tables;
 
 use App\Models\DetailAkunKeuangan;
 use Filament\Actions\BulkActionGroup;
@@ -9,29 +9,21 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
-class AdminSaldoNormalAkunsTable
+class UmkmSifatAkunKeuangansTable
 {
     public static function configure(Table $table): Table
     {
-        return $table
-            ->query(
-                DetailAkunKeuangan::query()
-                    // Pastikan nama tabel 'users' sesuai migrasi
-                    ->selectRaw('detail_akun_keuangan.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
+            return $table
+            // PERBAIKAN: modifyQueryUsing dipanggil langsung pada object $table
+            ->modifyQueryUsing(fn ($query) => 
+                $query->where('idUsers', Auth::id())
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
                 //
-                TextColumn::make('row_num')
-                    ->label('No')
-                    ->sortable(),
 
-                TextColumn::make('user.name')
-                    ->label('Nama Pengguna')
-                    ->searchable()
-                    ->default("Sebagai Referensi Akun")
-                    ->sortable(),
 
                 // Menampilkan No Referensi dari relasi AkunKeuangan
                 TextColumn::make('akunKeuangan.no_referensi')

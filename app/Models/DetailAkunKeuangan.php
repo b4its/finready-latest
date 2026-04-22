@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['idUsers', 'idAkunKeuangan', 'nominal'])]
+#[Fillable(['idUsers', 'idAkunKeuangan', 'is_debet'])]
 class DetailAkunKeuangan extends Model
 {
     protected $table = 'detail_akun_keuangan';

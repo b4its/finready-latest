@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Admin\AdminSaldoNormalAkuns\Tables;
+namespace App\Filament\Resources\Admin\AdminSaldoAwals\Tables;
 
-use App\Models\DetailAkunKeuangan;
+use App\Models\SaldoAwal;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -10,15 +10,14 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class AdminSaldoNormalAkunsTable
+class AdminSaldoAwalsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->query(
-                DetailAkunKeuangan::query()
-                    // Pastikan nama tabel 'users' sesuai migrasi
-                    ->selectRaw('detail_akun_keuangan.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
+                SaldoAwal::query()
+                    ->selectRaw('saldo_awal.*, ROW_NUMBER() OVER (ORDER BY created_at desc) as row_num')
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
@@ -27,32 +26,18 @@ class AdminSaldoNormalAkunsTable
                     ->label('No')
                     ->sortable(),
 
-                TextColumn::make('user.name')
-                    ->label('Nama Pengguna')
-                    ->searchable()
-                    ->default("Sebagai Referensi Akun")
-                    ->sortable(),
-
-                // Menampilkan No Referensi dari relasi AkunKeuangan
-                TextColumn::make('akunKeuangan.no_referensi')
-                    ->label('No. Referensi')
-                    ->searchable()
-                    ->badge()
-                    ->color('info')
-                    ->sortable(),
-
-                // Diperbaiki dari details.name menjadi akunKeuangan.name sesuai nama relasi di Model
-                TextColumn::make('akunKeuangan.name')
-                    ->label('Nama Akun')
+                TextColumn::make('detailAkunKeuangan.akunKeuangan.no_referensi')
+                    ->label('No Referensi Akun')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make("is_debet")
-                    ->label("Posisi")
-                    ->formatStateUsing(fn (string $state): string => [
-                        "D" => 'Debet',
-                        "K" => 'Kredit',
-                    ][$state] ?? $state),
+                TextColumn::make('debet')
+                    ->label('Debet')
+                    ->sortable(),
+                TextColumn::make('kredit')
+                    ->label('Kredit')
+                    ->sortable(),
 
+                
             ])
             ->filters([
                 //

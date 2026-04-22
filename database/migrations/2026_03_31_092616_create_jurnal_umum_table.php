@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('jurnal_umum', function (Blueprint $table) {
             $table->id();
             $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('no_faktur')->nullable();
+            $table->foreignId('idAkunKeuangan')->nullable()->constrained('akun_keuangan')->onDelete('cascade');
             $table->date('periode')->nullable();
-            $table->string('metode_pembayaran')->nullable();
             $table->string('lampiran')->nullable();
             $table->text('keterangan')->nullable();
             $table->text('keterangan_lain')->nullable();

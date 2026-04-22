@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('saldo_awal', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('idDetailAkunKeuangan')->nullable()->constrained('detail_akun_keuangan')->onDelete('cascade');
+            $table->decimal('debet', 25, 2)->default(0);
+            $table->decimal('kredit', 25, 2)->default(0);
             $table->timestamps();
         });
     }

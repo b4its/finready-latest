@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('detail_jurnal_umum', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('idAkunKeuangan')->nullable()->constrained('akun_keuangan')->onDelete('cascade');
             $table->foreignId('idJurnalUmum')->nullable()->constrained('jurnal_umum')->onDelete('cascade');
+            $table->string('no_faktur')->nullable();
             $table->char('is_debet', 1)->nullable()->comment("D: Debet| K: Kredit");
             $table->decimal('amount', 25, 2)->default(0);
+            $table->string('metode_pembayaran')->nullable();
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }
