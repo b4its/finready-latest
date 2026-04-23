@@ -51,10 +51,7 @@ class UmkmSifatAkunKeuanganResource extends Resource
         return 'Sifat Akun Keuangan';
     }
 
-    public static function getNavigationIcon(): string
-    {
-        return 'heroicon-o-book-open';
-    }
+    public static function getNavigationIcon(): string { return 'heroicon-o-book-open'; }
 
     public static function getPages(): array
     {

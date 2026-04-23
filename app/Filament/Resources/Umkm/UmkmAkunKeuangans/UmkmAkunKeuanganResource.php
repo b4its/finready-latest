@@ -21,6 +21,7 @@ class UmkmAkunKeuanganResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'akun_keuangan';
+    
     protected static ?string $slug = 'akun-keuangan';
 
     public static function form(Schema $schema): Schema
@@ -50,10 +51,7 @@ class UmkmAkunKeuanganResource extends Resource
         return 'Akun Keuangan';
     }
 
-    public static function getNavigationIcon(): string
-    {
-        return 'heroicon-o-book-open';
-    }
+public static function getNavigationIcon(): string { return 'heroicon-o-building-library'; }
     
 
 

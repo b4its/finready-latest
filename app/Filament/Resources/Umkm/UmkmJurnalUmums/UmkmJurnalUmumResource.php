@@ -50,10 +50,7 @@ class UmkmJurnalUmumResource extends Resource
         return 'Jurnal Umum';
     }
 
-    public static function getNavigationIcon(): string
-    {
-        return 'heroicon-o-book-open';
-    }
+    public static function getNavigationIcon(): string { return 'heroicon-o-pencil-square'; }
 
     public static function getPages(): array
     {

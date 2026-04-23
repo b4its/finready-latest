@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmSaldoAwals\Schemas;
+namespace App\Filament\Resources\Umkm\UmkmSaldoAwalAslis\Schemas;
 
 use App\Models\DetailAkunKeuangan;
 use Filament\Forms\Components\Select;
@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
 
-class UmkmSaldoAwalForm
+class UmkmSaldoAwalAsliForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -22,7 +22,7 @@ class UmkmSaldoAwalForm
                                 ->options(function () {
                                     return DetailAkunKeuangan::with('akunKeuangan')
                                         ->whereNull('idUsers') // Filter idUsers adalah null
-                                        ->orWhereIn('tipe', [0, 1])    // Filter tipe adalah 0
+                                        ->orWhereIn('tipe', [0, 2])
                                         ->get()
                                         ->mapWithKeys(function ($record) {
                                             $namaAkun = $record->akunKeuangan->name ?? 'Akun Tidak Ditemukan';

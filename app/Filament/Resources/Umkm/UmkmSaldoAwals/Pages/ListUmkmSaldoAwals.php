@@ -22,7 +22,7 @@ class ListUmkmSaldoAwals extends ListRecords
             CreateAction::make()
                 ->label("Tambahkan Saldo Awal")
                 ->mutateFormDataUsing(function (array $data): array {;
-                    $data['tipe'] = 2; // Indikator data praktek pengguna
+                    $data['tipe'] = 1; // Indikator data praktek pengguna
                     return $data;
                 })
                 ->using(function (array $data, string $model): Model {

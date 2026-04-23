@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmJurnalUmums\Tables;
+namespace App\Filament\Resources\Umkm\UmkmJurnalUmumAslis\Tables;
 
 use App\Models\JurnalUmum;
 use Filament\Actions\BulkActionGroup;
@@ -11,7 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
-class UmkmJurnalUmumsTable
+class UmkmJurnalUmumAslisTable
 {
     public static function configure(Table $table): Table
     {
@@ -19,7 +19,7 @@ class UmkmJurnalUmumsTable
             ->modifyQueryUsing(fn ($query) => 
                         $query->where(function ($q) {
                             $q->where('idUsers', Auth::id())
-                            ->orWhere('tipe', 1);
+                            ->orWhere('tipe', 2);
                         })->orderBy('created_at', 'desc')
                     )
             ->columns([

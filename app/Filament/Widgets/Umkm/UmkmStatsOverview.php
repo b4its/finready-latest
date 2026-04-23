@@ -19,7 +19,7 @@ class UmkmStatsOverview extends StatsOverviewWidget
         $currentYear = Carbon::now()->year;
 
         // 1. Hitung Total Saldo Awal (Debet - Kredit)
-        $totalSaldoAwal = SaldoAwal::where('idUsers', $userId)
+        $totalSaldoAwal = SaldoAwal::where('idUsers', $userId)// Menggunakan WHERE (AND), bukan OR
             ->selectRaw('SUM(debet) - SUM(kredit) as net_saldo')
             ->value('net_saldo') ?? 0;
 

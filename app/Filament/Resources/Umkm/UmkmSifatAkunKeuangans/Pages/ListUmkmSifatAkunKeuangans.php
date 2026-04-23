@@ -22,7 +22,7 @@ class ListUmkmSifatAkunKeuangans extends ListRecords
             CreateAction::make()
                 ->label("Tambahkan Sifat Akun Keuangan")
                 ->mutateFormDataUsing(function (array $data): array {
-                    $data['tipe'] = 2; // Indikator bahwa ini adalah data jawaban praktek
+                    $data['tipe'] = 1; 
                     return $data;
                 })
                 ->using(function (array $data, string $model): Model {
@@ -51,7 +51,7 @@ class ListUmkmSifatAkunKeuangans extends ListRecords
                             'idUsers' => Auth::id(),
                             'idAkunKeuangan' => $idAkunKeuangan,
                             'is_debet' => $inputIsDebet,
-                            'tipe' => $data['tipe'],
+                            'tipe' => 1,
                         ]);
 
                         // 5. SIMPAN KE LOG PRAKTEK KEUANGAN

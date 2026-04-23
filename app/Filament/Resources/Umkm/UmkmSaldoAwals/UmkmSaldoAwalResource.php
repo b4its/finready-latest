@@ -50,10 +50,7 @@ class UmkmSaldoAwalResource extends Resource
         return 'Saldo Awal';
     }
 
-    public static function getNavigationIcon(): string
-    {
-        return 'heroicon-o-book-open';
-    }
+    public static function getNavigationIcon(): string { return 'heroicon-o-calculator'; }
 
     public static function getPages(): array
     {

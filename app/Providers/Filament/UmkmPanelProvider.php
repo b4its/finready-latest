@@ -2,11 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\Umkm\UmkmAkunAslis\UmkmAkunAsliResource;
 use App\Filament\Resources\Umkm\UmkmAkunKeuangans\UmkmAkunKeuanganResource;
 use App\Filament\Resources\Umkm\UmkmBukuBesars\UmkmBukuBesarResource;
+use App\Filament\Resources\Umkm\UmkmJurnalUmumAslis\UmkmJurnalUmumAsliResource;
 use App\Filament\Resources\Umkm\UmkmJurnalUmums\UmkmJurnalUmumResource;
 use App\Filament\Resources\Umkm\UmkmPoins\UmkmPoinResource;
+use App\Filament\Resources\Umkm\UmkmSaldoAwalAslis\UmkmSaldoAwalAsliResource;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\UmkmSaldoAwalResource;
+use App\Filament\Resources\Umkm\UmkmSifatAkunAslis\UmkmSifatAkunAsliResource;
 use App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\UmkmSifatAkunKeuanganResource;
 use App\Filament\Widgets\Umkm\UmkmStatsOverview;
 use Blade;
@@ -85,6 +89,13 @@ class UmkmPanelProvider extends PanelProvider
                                 ...UmkmSaldoAwalResource::getNavigationItems(),
                                 ...UmkmJurnalUmumResource::getNavigationItems(),
                                 ]),
+                        NavigationGroup::make('Akun Riil') // Grup ini juga dikasih icon biar seragam
+                            ->items([
+                                ...UmkmAkunAsliResource::getNavigationItems(),
+                                ...UmkmSifatAkunAsliResource::getNavigationItems(),
+                                ...UmkmSaldoAwalAsliResource::getNavigationItems(),
+                                ...UmkmJurnalUmumAsliResource::getNavigationItems(),
+                            ]),
                         
                     ]);
             })

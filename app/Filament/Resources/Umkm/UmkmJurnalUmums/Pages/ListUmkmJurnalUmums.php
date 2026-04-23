@@ -8,6 +8,7 @@ use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Auth;
 
 class ListUmkmJurnalUmums extends ListRecords
 {
@@ -20,7 +21,8 @@ class ListUmkmJurnalUmums extends ListRecords
             CreateAction::make()
                 ->label("Tambahkan Jurnal Umum")
                 ->mutateFormDataUsing(function (array $data): array {
-                    $data['tipe'] = 2;
+                    $data['idUsers'] = Auth::user()->id;
+                    $data['tipe'] = 1;
                     return $data;
                 }),
 

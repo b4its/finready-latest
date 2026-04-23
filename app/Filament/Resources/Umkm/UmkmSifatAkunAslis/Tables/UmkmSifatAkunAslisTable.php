@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\Tables;
+namespace App\Filament\Resources\Umkm\UmkmSifatAkunAslis\Tables;
 
-use App\Models\DetailAkunKeuangan;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -11,13 +10,14 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
-class UmkmSifatAkunKeuangansTable
+class UmkmSifatAkunAslisTable
 {
-    public static function configure(Table $table): Table
+public static function configure(Table $table): Table
     {
             return $table
+            // PERBAIKAN: modifyQueryUsing dipanggil langsung pada object $table
             ->modifyQueryUsing(fn ($query) => 
-                $query->where('tipe', 1) // Satpam utama: Harus tipe 2
+                $query->where('tipe', 2) // Satpam utama: Harus tipe 2
                     ->where(function ($q) {
                         $q->where('idUsers', Auth::id()); // Boleh punya saya atau master
                     })
@@ -25,7 +25,6 @@ class UmkmSifatAkunKeuangansTable
             )
             ->columns([
                 //
-
 
                 // Menampilkan No Referensi dari relasi AkunKeuangan
                 TextColumn::make('akunKeuangan.no_referensi')
@@ -68,3 +67,4 @@ class UmkmSifatAkunKeuangansTable
             ]);
     }
 }
+

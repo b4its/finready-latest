@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmSaldoAwals\Tables;
+namespace App\Filament\Resources\Umkm\UmkmSaldoAwalAslis\Tables;
 
 use App\Models\SaldoAwal;
 use Filament\Actions\BulkActionGroup;
@@ -11,17 +11,18 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
-class UmkmSaldoAwalsTable
+class UmkmSaldoAwalAslisTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->modifyQueryUsing(fn ($query) => 
-                        $query->where(function ($q) {
-                            $q->where('idUsers', Auth::id())
-                            ->orWhere('tipe', 1);
-                        })->orderBy('created_at', 'desc')
-                    )
+                $query->where('tipe', 2) // Satpam utama: Harus tipe 2
+                    ->where(function ($q) {
+                        $q->where('idUsers', Auth::id()); // Boleh punya saya atau master
+                    })
+                    ->orderBy('created_at', 'desc')
+                )
             
             ->columns([
                 //

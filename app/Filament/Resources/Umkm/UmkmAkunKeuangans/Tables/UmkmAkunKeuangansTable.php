@@ -16,12 +16,15 @@ class UmkmAkunKeuangansTable
     public static function configure(Table $table): Table
     {
             return $table
-            // PERBAIKAN: modifyQueryUsing dipanggil langsung pada object $table
             ->modifyQueryUsing(fn ($query) => 
-                $query->where('idUsers', Auth::id())
-                    ->orWhereNull('idUsers')
+                $query->whereIn('tipe', [0, 1]) // 1. Kunci hanya boleh tipe 0 dan 1
+                    ->where(function ($q) {
+                        $q->where('idUsers', Auth::id()) // 2. Milik user yang login
+                            ->orWhereNull('idUsers');      // 3. ATAU yang master (null)
+                    })
+                    ->orderBy('idUsers', 'desc') // Prioritaskan yang ada idUsers-nya di atas
                     ->orderBy('created_at', 'desc')
-                )
+            )
             ->columns([
                 //
                 TextColumn::make("no_referensi")

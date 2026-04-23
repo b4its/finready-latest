@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ListUmkmAkunKeuangans extends ListRecords
 {
+    protected static ?string $title = "Daftar Akun Keuangan";
     protected static string $resource = UmkmAkunKeuanganResource::class;
 
     protected function getHeaderActions(): array
@@ -20,7 +21,7 @@ class ListUmkmAkunKeuangans extends ListRecords
             CreateAction::make()
                 ->label("Tambahkan Akun Keuangan")
                 ->mutateFormDataUsing(function (array $data): array {
-                    $data['tipe'] = 2; // Indikator data praktek
+                    $data['tipe'] = 1; // Indikator data praktek
                     return $data;
                 })
                 ->using(function (array $data, string $model): Model {
@@ -73,8 +74,8 @@ class ListUmkmAkunKeuangans extends ListRecords
                             'idUsers' => Auth::id(),
                             'idAkunKeuangan' => $record->id,
                             'table_name' => 'akun_keuangan',
-                            'title' => 'Praktek Pengelompokan Akun',
-                            'answer' => "Kat: $category | Det: $detailCategory",
+                            'title' => 'Praktek Akun Keuangan',
+                            'answer' => "Kategori: $category | Sub Kategori: $detailCategory",
                             'status_answer' => $statusAnswer,
                         ]);
 

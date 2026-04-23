@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\Tables;
+namespace App\Filament\Resources\Umkm\UmkmAkunAslis\Tables;
 
-use App\Models\DetailAkunKeuangan;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -11,46 +10,45 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
-class UmkmSifatAkunKeuangansTable
+class UmkmAkunAslisTable
 {
-    public static function configure(Table $table): Table
+public static function configure(Table $table): Table
     {
             return $table
             ->modifyQueryUsing(fn ($query) => 
-                $query->where('tipe', 1) // Satpam utama: Harus tipe 2
+                $query->whereIn('tipe', [0, 2]) // 1. Kunci hanya boleh tipe 0 dan 1
                     ->where(function ($q) {
-                        $q->where('idUsers', Auth::id()); // Boleh punya saya atau master
+                        $q->where('idUsers', Auth::id()) // 2. Milik user yang login
+                            ->orWhereNull('idUsers');      // 3. ATAU yang master (null)
                     })
+                    ->orderBy('idUsers', 'desc') // Prioritaskan yang ada idUsers-nya di atas
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
                 //
+                TextColumn::make("no_referensi")
+                    ->label("No Referensi"),
 
+                TextColumn::make("name")
+                    ->label("Nama Akun")
+                    ->searchable(),
+                
 
-                // Menampilkan No Referensi dari relasi AkunKeuangan
-                TextColumn::make('akunKeuangan.no_referensi')
-                    ->label('No. Referensi')
-                    ->searchable()
-                    ->badge()
-                    ->color('info')
-                    ->sortable(),
-
-                // Diperbaiki dari details.name menjadi akunKeuangan.name sesuai nama relasi di Model
-                TextColumn::make('akunKeuangan.name')
-                    ->label('Nama Akun')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make("is_debet")
-                    ->label("Posisi")
+                TextColumn::make("category")
+                    ->label("Kategori")
                     ->formatStateUsing(fn (string $state): string => [
-                        "D" => 'Debet',
-                        "K" => 'Kredit',
+                        "aset" => 'Aset',
+                        "pendapatan" => 'Pendapatan',
+                        "beban_biaya" => 'Beban atau Biaya',
+                        "modal" => 'Modal',
+                        "kewajiban" => 'Kewajiban',
+                        "lain-lain" => 'Pendapatan Lain Lain',
                     ][$state] ?? $state),
-
             ])
             ->filters([
                 //
             ])
+            ->emptyStateHeading('Tidak ada Data Akun Keuangan')
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make()
@@ -68,3 +66,4 @@ class UmkmSifatAkunKeuangansTable
             ]);
     }
 }
+
