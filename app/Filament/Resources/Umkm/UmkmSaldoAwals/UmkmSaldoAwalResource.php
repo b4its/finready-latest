@@ -7,7 +7,7 @@ use App\Filament\Resources\Umkm\UmkmSaldoAwals\Pages\EditUmkmSaldoAwal;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\Pages\ListUmkmSaldoAwals;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\Schemas\UmkmSaldoAwalForm;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\Tables\UmkmSaldoAwalsTable;
-use App\Models\UmkmSaldoAwal;
+use App\Models\SaldoAwal;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class UmkmSaldoAwalResource extends Resource
 {
-    protected static ?string $model = UmkmSaldoAwal::class;
+    protected static ?string $model = SaldoAwal::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
@@ -42,7 +42,7 @@ class UmkmSaldoAwalResource extends Resource
 
     public static function getNavigationGroup(): string
     {
-        return 'Praktek';
+        return 'Uji Coba';
     }
 
     public static function getNavigationLabel(): string

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->date('periode')->nullable();
             $table->string('lampiran')->nullable();
             $table->text('keterangan')->nullable();
-            $table->text('keterangan_lain')->nullable();
             $table->tinyInteger('tipe')->default(0)->comment("1. Referensi, 2. Praktek, 3. Akun Riil");
             $table->timestamps();   
         });

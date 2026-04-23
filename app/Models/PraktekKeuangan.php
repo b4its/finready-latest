@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['idUsers', 'idAkunKeuangan', 'idJurnalUmum', 'table_name', 'title', 'answer', 'status_answer'])]
+#[Fillable(['idUsers', 'idAkunKeuangan', 'idDetailAkunKeuangan', 'idSaldoAwal','idJurnalUmum', 'table_name', 'title', 'answer', 'status_answer'])]
 class PraktekKeuangan extends Model
 {
     //
-    protected $table = 'praktekkeuangan';
+    protected $table = 'praktek_keuangan';
 
     // Relasi Inverse ke Room
     public function user(): BelongsTo
@@ -21,6 +21,10 @@ class PraktekKeuangan extends Model
     public function akunKeuangan(): BelongsTo
     {
         return $this->belongsTo(AkunKeuangan::class, 'idAkunKeuangan', 'id');
+    }
+    public function detailAkunKeuangan(): BelongsTo
+    {
+        return $this->belongsTo(DetailAkunKeuangan::class, 'idDetailAkunKeuangan', 'id');
     }
 
     public function jurnalUmum(): BelongsTo

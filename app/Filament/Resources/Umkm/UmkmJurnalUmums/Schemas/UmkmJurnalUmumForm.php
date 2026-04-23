@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Umkm\UmkmJurnalUmums\Schemas;
 
 use App\Models\AkunKeuangan;
+use App\Models\SaldoAwal;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
@@ -28,81 +29,80 @@ class UmkmJurnalUmumForm
                 // ==========================================
                 // 1. BAGIAN ATAS: PREVIEW TOTAL JURNAL
                 // ==========================================
-                Section::make('Preview Jurnal Entry')
-                    ->schema([
-                        Placeholder::make('preview_jurnal')
-                            ->hiddenLabel()
-                            ->content(function (Get $get) {
-                                $details = $get('details') ?? [];
+                // Section::make('Preview Jurnal Entry')
+                //     ->schema([
+                //         Placeholder::make('preview_jurnal')
+                //             ->hiddenLabel()
+                //             ->content(function (Get $get) {
+                //                 $details = $get('details') ?? [];
                                 
-                            $totalDebet = 0;
-                            $totalKredit = 0;
-                            $htmlLines = "";
-                            $barisCounter = 1; // 1. Tambahkan variabel counter integer di sini
+                //                 $totalDebet = 0;
+                //                 $totalKredit = 0;
+                //                 $htmlLines = "";
+                //                 $barisCounter = 1;
 
-                            // Ambil nama akun dari Header
-                            $headerAkunId = $get('idAkunKeuangan');
-                            $akunName = 'Akun Praktek';
-                            if ($headerAkunId) {
-                                $akunName = AkunKeuangan::find($headerAkunId)?->name ?? 'Akun Praktek';
-                            }
+                //                 // Ambil nama akun dari Header
+                //                 $headerAkunId = $get('idAkunKeuangan');
+                //                 $akunName = 'Akun Praktek';
+                //                 if ($headerAkunId) {
+                //                     $akunName = AkunKeuangan::find($headerAkunId)?->name ?? 'Akun Praktek';
+                //                 }
 
-                            foreach ($details as $index => $detail) {
-                                $rawAmount = $detail['amount'] ?? 0;
-                                
-                                if (is_string($rawAmount)) {
-                                    $amount = (float) str_replace(['.', ','], ['', '.'], $rawAmount);
-                                } else {
-                                    $amount = (float) $rawAmount;
-                                }
-
-                                $isDebet = $detail['is_debet'] ?? null;
-                                
-                                if ($amount > 0 && $isDebet) {
-                                    $formattedAmount = number_format($amount, 0, ',', '.');
+                //                 foreach ($details as $index => $detail) {
+                //                     $rawAmount = $detail['amount'] ?? 0;
                                     
-                                    // 2. Gunakan $barisCounter, bukan ($index + 1)
-                                    $barisName = "Baris " . $barisCounter;
+                //                     if (is_string($rawAmount)) {
+                //                         $amount = (float) str_replace(['.', ','], ['', '.'], $rawAmount);
+                //                     } else {
+                //                         $amount = (float) $rawAmount;
+                //                     }
 
-                                    if ($isDebet === 'D') {
-                                        $totalDebet += $amount;
-                                        $htmlLines .= "<div style='padding-left: 1.5rem; color: #4ade80;'>{$barisName} &middot; Rp {$formattedAmount} (D)</div>";
-                                    } else {
-                                        $totalKredit += $amount;
-                                        $htmlLines .= "<div style='padding-left: 1.5rem; color: #f87171;'>{$barisName} &middot; Rp {$formattedAmount} (K)</div>";
-                                    }
-                                }
+                //                     $isDebet = $detail['is_debet'] ?? null;
+                                    
+                //                     if ($amount > 0 && $isDebet) {
+                //                         $formattedAmount = number_format($amount, 0, ',', '.');
+                                        
+                //                         $barisName = "Baris " . $barisCounter;
+
+                //                         if ($isDebet === 'D') {
+                //                             $totalDebet += $amount;
+                //                             $htmlLines .= "<div style='padding-left: 1.5rem; color: #4ade80;'>{$barisName} &middot; Rp {$formattedAmount} (D)</div>";
+                //                         } else {
+                //                             $totalKredit += $amount;
+                //                             $htmlLines .= "<div style='padding-left: 1.5rem; color: #f87171;'>{$barisName} &middot; Rp {$formattedAmount} (K)</div>";
+                //                         }
+                //                     }
+                                    
+                //                     $barisCounter++; 
+                //                 }
                                 
-                                // 3. Increment counter setiap kali loop berjalan
-                                $barisCounter++; 
-                            }
-                                $formattedTotalD = number_format($totalDebet, 0, ',', '.');
-                                $formattedTotalK = number_format($totalKredit, 0, ',', '.');
+                //                 $formattedTotalD = number_format($totalDebet, 0, ',', '.');
+                //                 $formattedTotalK = number_format($totalKredit, 0, ',', '.');
                                 
-                                $isBalanced = (round($totalDebet, 2) === round($totalKredit, 2) && $totalDebet > 0);
+                //                 $isBalanced = (round($totalDebet, 2) === round($totalKredit, 2) && $totalDebet > 0);
 
-                                $balanceStatus = $isBalanced 
-                                    ? "<span style='color: #4ade80; font-weight: bold;'>[BALANCE]</span>" 
-                                    : "<span style='color: #f87171; font-weight: bold;'>[TIDAK BALANCE]</span>";
+                //                 $balanceStatus = $isBalanced 
+                //                     ? "<span style='color: #4ade80; font-weight: bold;'>[BALANCE]</span>" 
+                //                     : "<span style='color: #f87171; font-weight: bold;'>[TIDAK BALANCE]</span>";
 
-                                return new HtmlString("
-                                    <div style='font-family: monospace; font-size: 0.875rem; background-color: #111827; padding: 1.25rem; border-radius: 0.5rem; width: 100%;'>
-                                        <div style='color: #e5e7eb; font-weight: bold; margin-bottom: 0.5rem;'>Akun: <span style='color: #60a5fa;'>{$akunName}</span></div>
-                                        <div style='color: #e5e7eb; font-weight: bold; margin-bottom: 0.5rem;'>Rincian Entri:</div>
-                                        {$htmlLines}
-                                        <hr style='border-color: #374151; margin: 1rem 0;' />
-                                        <div style='display: flex; justify-content: space-between;'>
-                                            <div>
-                                                <div style='color: #4ade80;'>Total Debet: Rp {$formattedTotalD}</div>
-                                                <div style='color: #f87171;'>Total Kredit: Rp {$formattedTotalK}</div>
-                                            </div>
-                                            <div>{$balanceStatus}</div>
-                                        </div>
-                                    </div>
-                                ");
-                            }),
-                    ])
-                    ->columnSpanFull(),
+                //                 return new HtmlString("
+                //                     <div style='font-family: monospace; font-size: 0.875rem; background-color: #111827; padding: 1.25rem; border-radius: 0.5rem; width: 100%;'>
+                //                         <div style='color: #e5e7eb; font-weight: bold; margin-bottom: 0.5rem;'>Akun: <span style='color: #60a5fa;'>{$akunName}</span></div>
+                //                         <div style='color: #e5e7eb; font-weight: bold; margin-bottom: 0.5rem;'>Rincian Entri:</div>
+                //                         {$htmlLines}
+                //                         <hr style='border-color: #374151; margin: 1rem 0;' />
+                //                         <div style='display: flex; justify-content: space-between;'>
+                //                             <div>
+                //                                 <div style='color: #4ade80;'>Total Debet: Rp {$formattedTotalD}</div>
+                //                                 <div style='color: #f87171;'>Total Kredit: Rp {$formattedTotalK}</div>
+                //                             </div>
+                //                             <div>{$balanceStatus}</div>
+                //                         </div>
+                //                     </div>
+                //                 ");
+                //             }),
+                //     ])
+                //     ->columnSpanFull(),
 
                 // ==========================================
                 // 2. BAGIAN BAWAH: INPUT DATA HEADER
@@ -123,24 +123,52 @@ class UmkmJurnalUmumForm
                             ->rows(3)
                             ->columnSpanFull(),
 
-                        Textarea::make('keterangan_lain')
-                            ->label('Keterangan Lain')
-                            ->placeholder('Keterangan tambahan...')
-                            ->rows(3)
-                            ->columnSpanFull(),
-
-                        // Akun Keuangan memang ada di Header (jurnal_umum)
                         Select::make('idAkunKeuangan')
                             ->label('Nama Akun Keuangan')
                             ->options(function () {
-                                return AkunKeuangan::get()
-                                    ->mapWithKeys(function ($record) {
-                                        $namaAkun = $record->name ?? 'Akun Tidak Ditemukan';
-                                        return [$record->id => "{$namaAkun} (ID: {$record->id})"];
-                                    });
+                                return AkunKeuangan::with('details')->get()->mapWithKeys(function ($record) {
+                                    $namaAkun = $record->name ?? 'Akun Tidak Ditemukan';
+                                    
+                                    $detailIds = $record->details->pluck('id');
+                                    $saldoAwals = SaldoAwal::whereIn('idDetailAkunKeuangan', $detailIds)->get();
+                                    
+                                    $totalSaldo = $saldoAwals->sum('debet') + $saldoAwals->sum('kredit');
+                                    $formattedSaldo = number_format($totalSaldo, 0, ',', '.');
+                                    
+                                    return [
+                                        $record->id => "{$namaAkun} (ID: {$record->id}) - Saldo: Rp {$formattedSaldo}"
+                                    ];
+                                });
                             })
-                            ->live() // Trigger live agar preview di atas terupdate
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                if (!$state) {
+                                    $set('saldo_awal', null);
+                                    return;
+                                }
+
+                                $akun = AkunKeuangan::with('details')->find($state);
+                                if ($akun) {
+                                    $detailIds = $akun->details->pluck('id');
+                                    $saldoAwals = SaldoAwal::whereIn('idDetailAkunKeuangan', $detailIds)->get();
+                                    
+                                    $totalSaldo = $saldoAwals->sum('debet') + $saldoAwals->sum('kredit');
+                                    $set('saldo_awal', $totalSaldo);
+                                }
+                            })
                             ->required()
+                            ->columnSpanFull(),
+
+                        TextInput::make('saldo_awal')
+                            ->label('Saldo Awal')
+                            ->prefix('Rp')
+                            ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                            ->stripCharacters('.')
+                            ->readOnly()
+                            ->columnSpanFull(),
+
+                        
+
                     ])
                     ->columnSpanFull(),
 
@@ -163,7 +191,6 @@ class UmkmJurnalUmumForm
                                     ->maxLength(255)
                                     ->columnSpanFull(),
 
-
                                 Select::make('is_debet')
                                     ->label('Posisi')
                                     ->options([
@@ -174,24 +201,19 @@ class UmkmJurnalUmumForm
                                     ->required()
                                     ->columnSpanFull(),
 
-                                // COMPONENT SELECT AKUN KEUANGAN DIHAPUS DARI SINI
-                                // Karena di tabel detail_jurnal_umum dan model DetailJurnalUmum TIDAK ADA idAkunKeuangan
-
-                                // Tambahan: Karena di database Anda ada no_faktur dan metode_pembayaran
                                 Select::make('metode_pembayaran')
                                     ->label('Metode Pembayaran')
                                     ->options([
                                         "tunai" => 'Tunai',
-                                        "kredit" => 'Kredit',
                                         "transfer-tunai" => 'Transfer Tunai',
                                     ])
                                     ->live() 
                                     ->required()
                                     ->columnSpanFull(),
+
                                 TextInput::make('amount')
                                     ->label('Jumlah (Rp)')
                                     ->prefix('Rp')
-                                    // Gunakan mask untuk tampilan ribuan yang cantik
                                     ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
                                     ->stripCharacters('.')
                                     ->required()

@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 
 class AdminSaldoAwalForm
 {
@@ -34,21 +35,21 @@ class AdminSaldoAwalForm
                             ->columnSpanFull(),
                                 TextInput::make('debet')
                                     ->label('Debet')
-                                    ->required()
-                                    ->numeric()
-                                    ->default(0.00)
                                     ->prefix('Rp')
-                                    ->maxValue(99999999999999999999999.99)
-                                    ->step('0.01'),
+                                    // Gunakan mask untuk tampilan ribuan yang cantik
+                                    ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                                    ->stripCharacters('.')
+                                    ->required()
+                                    ->live(onBlur: true),
 
                                 TextInput::make('kredit')
                                     ->label('Kredit')
-                                    ->required()
-                                    ->numeric()
-                                    ->default(0.00)
                                     ->prefix('Rp')
-                                    ->maxValue(99999999999999999999999.99)
-                                    ->step('0.01'),
+                                    // Gunakan mask untuk tampilan ribuan yang cantik
+                                    ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                                    ->stripCharacters('.')
+                                    ->required()
+                                    ->live(onBlur: true),
        
                     ])
                     ->columnSpanFull(),

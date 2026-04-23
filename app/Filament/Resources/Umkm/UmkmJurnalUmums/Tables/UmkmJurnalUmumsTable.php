@@ -64,19 +64,28 @@ class UmkmJurnalUmumsTable
 
                 TextColumn::make('status')
                     ->label('Status Balance')
-                    ->getStateUsing(function (JurnalUmum $record) {
-                        $debet = $record->details->where('is_debet', 'D')->sum('amount');
-                        $kredit = $record->details->where('is_debet', 'K')->sum('amount');
-                        
-                        if ($debet === 0 && $kredit === 0) return 'Kosong';
-                        return $debet === $kredit ? 'Balance' : 'Tidak Balance';
-                    })
                     ->badge()
+                    ->default('Balance')
                     ->color(fn (string $state): string => match ($state) {
                         'Balance' => 'success',
                         'Tidak Balance' => 'danger',
                         'Kosong' => 'gray',
                     }),
+                // TextColumn::make('status')
+                //     ->label('Status Balance')
+                //     ->getStateUsing(function (JurnalUmum $record) {
+                //         $debet = $record->details->where('is_debet', 'D')->sum('amount');
+                //         $kredit = $record->details->where('is_debet', 'K')->sum('amount');
+                        
+                //         if ($debet === 0 && $kredit === 0) return 'Kosong';
+                //         return $debet === $kredit ? 'Balance' : 'Tidak Balance';
+                //     })
+                //     ->badge()
+                //     ->color(fn (string $state): string => match ($state) {
+                //         'Balance' => 'success',
+                //         'Tidak Balance' => 'danger',
+                //         'Kosong' => 'gray',
+                //     }),
 
                 
             ])

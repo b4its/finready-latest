@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('idUsers')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('idAkunKeuangan')->nullable()->constrained('akun_keuangan')->onDelete('cascade');
+            $table->foreignId('idDetailAkunKeuangan')->nullable()->constrained('detail_akun_keuangan')->onDelete('cascade');
+            $table->foreignId('idSaldoAwal')->nullable()->constrained('saldo_awal')->onDelete('cascade');
             $table->foreignId('idJurnalUmum')->nullable()->constrained('jurnal_umum')->onDelete('cascade');
             $table->string('table_name')->nullable();
             $table->string('title')->nullable();

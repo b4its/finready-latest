@@ -21,6 +21,11 @@ class AkunKeuangan extends Model
     {
         return $this->hasMany(DetailAkunKeuangan::class, 'idAkunKeuangan', 'id');
     }
+    
+    public function saldoAwal(): HasMany
+    {
+        return $this->hasMany(SaldoAwal::class, 'idAkunKeuangan', 'id');
+    }
 
     public function detailJurnal(): HasMany
     {

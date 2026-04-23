@@ -7,7 +7,7 @@ use App\Filament\Resources\Admin\AdminSifatSaldoAkuns\Pages\EditAdminSifatSaldoA
 use App\Filament\Resources\Admin\AdminSifatSaldoAkuns\Pages\ListAdminSifatSaldoAkuns;
 use App\Filament\Resources\Admin\AdminSifatSaldoAkuns\Schemas\AdminSifatSaldoAkunForm;
 use App\Filament\Resources\Admin\AdminSifatSaldoAkuns\Tables\AdminSifatSaldoAkunsTable;
-use App\Models\AdminSifatSaldoAkun;
+use App\Models\DetailAkunKeuangan;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,11 +16,12 @@ use Filament\Tables\Table;
 
 class AdminSifatSaldoAkunResource extends Resource
 {
-    protected static ?string $model = AdminSifatSaldoAkun::class;
+    protected static ?string $model = DetailAkunKeuangan::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'detail_akun_keuangan';
+    protected static ?string $slug = 'sifat-saldo-akun';
 
     public static function form(Schema $schema): Schema
     {

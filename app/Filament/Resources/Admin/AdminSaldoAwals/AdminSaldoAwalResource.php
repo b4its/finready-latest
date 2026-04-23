@@ -21,6 +21,7 @@ class AdminSaldoAwalResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'saldo_awal';
+    protected static ?string $slug = 'saldo-awal';
 
     public static function form(Schema $schema): Schema
     {

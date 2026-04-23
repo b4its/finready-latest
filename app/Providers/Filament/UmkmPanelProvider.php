@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Umkm\UmkmAkunKeuangans\UmkmAkunKeuanganResource;
+use App\Filament\Resources\Umkm\UmkmBukuBesars\UmkmBukuBesarResource;
 use App\Filament\Resources\Umkm\UmkmJurnalUmums\UmkmJurnalUmumResource;
 use App\Filament\Resources\Umkm\UmkmPoins\UmkmPoinResource;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\UmkmSaldoAwalResource;
@@ -77,7 +78,7 @@ class UmkmPanelProvider extends PanelProvider
                     ])
                     ->groups([
                         // 2. Grup Akun di urutan kedua
-                        NavigationGroup::make('Praktek Keuangan')
+                        NavigationGroup::make('Uji Coba')
                             ->items([
                                 ...UmkmAkunKeuanganResource::getNavigationItems(),
                                 ...UmkmSifatAkunKeuanganResource::getNavigationItems(),

@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 
 class UmkmSaldoAwalForm
 {
@@ -16,37 +17,39 @@ class UmkmSaldoAwalForm
             ->components([
                 Section::make('Informasi Saldo Awal')
                     ->schema([
-                        Select::make('idDetailAkunKeuangan')
-                            ->label('Referensi Akun Keuangan')
-                            ->options(function () {
-                                return DetailAkunKeuangan::with('akunKeuangan')
-                                    ->get()
-                                    ->mapWithKeys(function ($record) {
-                                        $namaAkun = $record->akunKeuangan->name ?? 'Akun Tidak Ditemukan';
-                                        return [$record->id => "{$namaAkun} (ID: {$record->id})"];
-                                    });
-                            })
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->columnSpanFull(),
+                            Select::make('idDetailAkunKeuangan')
+                                ->label('Referensi Akun Keuangan')
+                                ->options(function () {
+                                    return DetailAkunKeuangan::with('akunKeuangan')
+                                        ->whereNull('idUsers') // Filter idUsers adalah null
+                                        ->where('tipe', 0)      // Filter tipe adalah 0
+                                        ->get()
+                                        ->mapWithKeys(function ($record) {
+                                            $namaAkun = $record->akunKeuangan->name ?? 'Akun Tidak Ditemukan';
+                                            return [$record->id => "{$record->akunKeuangan->no_referensi} - {$namaAkun} (Kategori: {$record->akunKeuangan->category} - {$record->akunKeuangan->detail_category})"];
+                                        });
+                                })
+                                ->searchable()
+                                ->preload()
+                                ->required()
+                                ->columnSpanFull(),
                                 TextInput::make('debet')
                                     ->label('Debet')
-                                    ->required()
-                                    ->numeric()
-                                    ->default(0.00)
                                     ->prefix('Rp')
-                                    ->maxValue(99999999999999999999999.99)
-                                    ->step('0.01'),
+                                    // Gunakan mask untuk tampilan ribuan yang cantik
+                                    ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                                    ->stripCharacters('.')
+                                    ->required()
+                                    ->live(onBlur: true),
 
                                 TextInput::make('kredit')
                                     ->label('Kredit')
-                                    ->required()
-                                    ->numeric()
-                                    ->default(0.00)
                                     ->prefix('Rp')
-                                    ->maxValue(99999999999999999999999.99)
-                                    ->step('0.01'),
+                                    // Gunakan mask untuk tampilan ribuan yang cantik
+                                    ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                                    ->stripCharacters('.')
+                                    ->required()
+                                    ->live(onBlur: true),
        
                     ])
                     ->columnSpanFull(),

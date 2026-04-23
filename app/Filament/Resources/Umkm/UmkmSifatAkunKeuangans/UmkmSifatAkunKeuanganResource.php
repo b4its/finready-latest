@@ -43,7 +43,7 @@ class UmkmSifatAkunKeuanganResource extends Resource
 
     public static function getNavigationGroup(): string
     {
-        return 'Praktek';
+        return 'Uji Coba';
     }
 
     public static function getNavigationLabel(): string
