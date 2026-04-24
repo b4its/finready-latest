@@ -1447,12 +1447,12 @@
           <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
         </div>
         <div class="role-cards">
-          <a href="register.html?role=umkm" class="role-card">
+          <a href="{{ route('authenticate.login') }}?role=umkm" class="role-card">
             <div class="role-card-icon">🏪</div>
             <div class="role-card-name">UMKM</div>
             <div class="role-card-desc">Pemilik usaha yang ingin mengelola laporan keuangan</div>
           </a>
-          <a href="register.html?role=investor" class="role-card">
+          <a href="{{ route('authenticate.login') }}?role=investor" class="role-card">
             <div class="role-card-icon">📈</div>
             <div class="role-card-name">Investor</div>
             <div class="role-card-desc">Investor yang ingin menganalisis peluang bisnis</div>

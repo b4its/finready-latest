@@ -30,6 +30,16 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class, 'idUsers', 'id');
     }
 
+    public function umkmProfile(): HasOne
+    {
+        return $this->hasOne(UmkmProfile::class, 'idUsers', 'id');
+    }
+
+    public function investorProfile(): HasOne
+    {
+        return $this->hasOne(InvestorProfile::class, 'idUsers', 'id');
+    }
+
     // Relasi One-to-Many dengan Score
     public function scores(): HasMany
     {
