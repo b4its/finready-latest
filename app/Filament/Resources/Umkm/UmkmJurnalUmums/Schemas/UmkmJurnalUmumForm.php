@@ -141,6 +141,7 @@ class UmkmJurnalUmumForm
                                 });
                             })
                             ->live()
+                            ->searchable()
                             ->afterStateUpdated(function (Set $set, $state) {
                                 if (!$state) {
                                     $set('saldo_awal', null);
@@ -179,10 +180,11 @@ class UmkmJurnalUmumForm
                     ->description('Pastikan total Debet dan Kredit bernilai sama (Balance).')
                     ->schema([
                         Repeater::make('details') 
+                            ->label(fn (Repeater $component): string => "Data ke: " . count($component->getState() ?? []))
                             ->relationship()
                             ->schema([
                                 TextInput::make('no_faktur')
-                                    ->label('No. Faktur')
+                                    ->label('No. Faktur/No. Bukti')
                                     ->maxLength(255)
                                     ->columnSpanFull(),
 
@@ -204,6 +206,7 @@ class UmkmJurnalUmumForm
                                 Select::make('metode_pembayaran')
                                     ->label('Metode Pembayaran')
                                     ->options([
+                                        "bayar_nanti" => 'Bayar Nanti',
                                         "tunai" => 'Tunai',
                                         "transfer-tunai" => 'Transfer Tunai',
                                     ])
@@ -220,7 +223,7 @@ class UmkmJurnalUmumForm
                                     ->live(onBlur: true),
                             ])
                             ->columns(1) 
-                            ->defaultItems(2)
+                            ->defaultItems(1)
                             ->live()
                             ->addActionLabel('Tambah Baris Jurnal')
                             ->columnSpanFull(),

@@ -37,9 +37,15 @@ class ListUmkmJurnalUmums extends ListRecords
                     Select::make('jenis_dokumen')
                         ->label('Jenis Dokumen')
                         ->options([
+                            'jurnal_umum' => 'Jurnal Umum',
                             'buku_besar' => 'Buku Besar Umum',
                             'neraca_saldo' => 'Neraca Saldo',
-                            'jurnal_penyesuaian' => 'Jurnal Penyesuaian', // Tambahan Baru
+                            'jurnal_penyesuaian' => 'Jurnal Penyesuaian',
+                            'neraca_saldo_setelah_penyesuaian' => 'Neraca Saldo Setelah Penyesuaian',
+                            'laba_rugi' => 'Laba Rugi',
+                            'perubahan_modal' => 'Perubahan Modal',
+                            'neraca' => 'Neraca',
+                            'arus_kas' => 'Arus Kas',
                         ])
                         ->default('buku_besar')
                         ->required(),
@@ -64,13 +70,35 @@ class ListUmkmJurnalUmums extends ListRecords
                         ->required(),
                 ])
                 ->action(function (array $data) {
-                    if ($data['jenis_dokumen'] === 'buku_besar') {
+                    if ($data['jenis_dokumen'] === 'jurnal_umum') {
+                        return redirect()->to(route('jurnal_umum.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                    }else if ($data['jenis_dokumen'] === 'buku_besar') {
                         return redirect()->to(route('buku_besar.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
                     } elseif ($data['jenis_dokumen'] === 'neraca_saldo') {
                         return redirect()->to(route('neraca_saldo.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
-                    } elseif ($data['jenis_dokumen'] === 'jurnal_penyesuaian') {
+                    } else if ($data['jenis_dokumen'] === 'jurnal_penyesuaian') {
                         // Arahkan ke rute Jurnal Penyesuaian
                         return redirect()->to(route('jurnal_penyesuaian.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                    
+                    } else if ($data['jenis_dokumen'] === 'laba_rugi') {
+                        // Arahkan ke rute Jurnal Penyesuaian
+                        return redirect()->to(route('laba_rugi.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                    
+                    } else if ($data['jenis_dokumen'] === 'perubahan_modal') {
+                        // Arahkan ke rute Jurnal Penyesuaian
+                        return redirect()->to(route('perubahan_modal.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                    
+                    } else if ($data['jenis_dokumen'] === 'neraca') {
+                        // Arahkan ke rute Jurnal Penyesuaian
+                        return redirect()->to(route('neraca.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                    
+                    } else if ($data['jenis_dokumen'] === 'arus_kas') {
+                        // Arahkan ke rute Jurnal Penyesuaian
+                        return redirect()->to(route('arus_kas.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                    
+                    } elseif ($data['jenis_dokumen'] === 'neraca_saldo_setelah_penyesuaian') {
+                        // Arahkan ke rute Jurnal Penyesuaian
+                        return redirect()->to(route('neraca_saldo_setelah_penyesuaian.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
                     }
                 }),
         ];

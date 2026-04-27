@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     zip unzip git curl mariadb-client
 
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - \
+    && apt-get install -y nodejs
+
 # 2. Tambahkan intl di sini
 RUN docker-php-ext-install pdo_mysql gd zip intl
 

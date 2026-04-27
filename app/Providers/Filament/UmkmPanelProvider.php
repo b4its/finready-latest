@@ -12,6 +12,7 @@ use App\Filament\Resources\Umkm\UmkmSaldoAwalAslis\UmkmSaldoAwalAsliResource;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\UmkmSaldoAwalResource;
 use App\Filament\Resources\Umkm\UmkmSifatAkunAslis\UmkmSifatAkunAsliResource;
 use App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\UmkmSifatAkunKeuanganResource;
+use App\Filament\Widgets\Umkm\Chart\UmkmMutasiChart;
 use App\Filament\Widgets\Umkm\UmkmStatsOverview;
 use Blade;
 use Filament\Http\Middleware\Authenticate;
@@ -100,7 +101,8 @@ class UmkmPanelProvider extends PanelProvider
                     ]);
             })
             ->widgets([
-                UmkmStatsOverview::class
+                UmkmStatsOverview::class,
+                UmkmMutasiChart::class
             ])
             ->middleware([
                 EncryptCookies::class,

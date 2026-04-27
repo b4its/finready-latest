@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('alamat')->nullable();
-            $table->string('level')->nullable()->default('learning');
+            $table->string('level')->nullable()->default('learning')->comment('learning, discipline, structured, ready');
             $table->decimal('modal_awal', 15, 2)->nullable()->default(0);
             $table->timestamps();
         });
