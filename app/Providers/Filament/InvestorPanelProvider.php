@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\Investor\InvestorStatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -56,7 +57,7 @@ class InvestorPanelProvider extends PanelProvider
                 fn () => view('filament.hooks.halaman-utama-button'),
             )
             ->widgets([
-                AccountWidget::class,
+                InvestorStatsOverview::class
             ])
             ->middleware([
                 EncryptCookies::class,

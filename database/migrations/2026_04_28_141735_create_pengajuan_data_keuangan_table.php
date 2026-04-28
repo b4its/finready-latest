@@ -17,8 +17,9 @@ return new class extends Migration
             $table->foreignId('umkm_target')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('title')->nullable();
             $table->text('keterangan')->nullable();
-            $table->tinyInteger('status_pengajuan')->default(0)->comment("0. Tidak Diterima, 1. Diterima");
+            $table->tinyInteger('status_pengajuan')->default(0)->comment("0. Tidak Diterima, 1. Diterima, 2. Sudah didanai");
             $table->datetime('waktu_pertemuan')->nullable();
+            $table->decimal('nominal_pendanaan', 25, 2)->nullable(); 
             $table->timestamps();
         });
     }

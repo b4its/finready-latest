@@ -28,8 +28,14 @@ class InvestorUmkmListPages extends Page
         'label' => ''
     ];
 
-    // Properti Form Pengajuan
+    // Properti Form Pengajuan Data
     public string $alasanPengajuan = '';
+
+    // Properti Form Pengajuan Pertemuan
+    public ?string $waktuPertemuan = null;
+
+    // Properti Form Nominal Pendanaan
+    public ?string $nominalPendanaan = null;
 
     // Properti Form Cetak Dokumen
     public string $cetakJenisDokumen = 'buku_besar';
@@ -48,6 +54,8 @@ class InvestorUmkmListPages extends Page
             $this->selectedUmkm = null;
             $this->chartData = [];
             $this->availablePeriods = [];
+            $this->waktuPertemuan = null;
+            $this->nominalPendanaan = null;
         } else {
             $this->selectedUmkm = collect($this->umkmList)->firstWhere('id', $id);
             
@@ -174,12 +182,11 @@ class InvestorUmkmListPages extends Page
     #[Computed]
     public function umkmList(): array
     {
-        // LOGIKA BARU: Ambil status pengajuan terbaru per umkm_target
-        // Urutkan berdasarkan ID ASC agar pluck otomatis mengambil data terbaru
-        $pengajuanStatus = PengajuanDataKeuangan::where('idUsers', Auth::id())
+        // Mengambil data pengajuan lengkap agar tidak perlu query berulang
+        $pengajuanUser = PengajuanDataKeuangan::where('idUsers', Auth::id())
             ->orderBy('id', 'asc')
-            ->pluck('status_pengajuan', 'umkm_target')
-            ->toArray();
+            ->get()
+            ->keyBy('umkm_target'); // Otomatis menyimpan pengajuan terbaru per umkm_target
 
         $query = UmkmProfile::with(['user', 'sosialMedia'])
             ->whereHas('user', fn($q) => $q->where('role', 'umkm'));
@@ -192,9 +199,7 @@ class InvestorUmkmListPages extends Page
             });
         }
 
-
-
-        return $query->get()->map(function ($umkm) use ($pengajuanStatus) {
+        return $query->get()->map(function ($umkm) use ($pengajuanUser) {
             $isNibVerified = !empty($umkm->nib);
             $total_poin_progress = LearnProgress::where('idUsers', $umkm->user->id)
                 ->whereNotNull('point')
@@ -205,6 +210,10 @@ class InvestorUmkmListPages extends Page
                                 : ($total_poin_progress > 1000 
                                     ? "Structured" 
                                     : ($total_poin_progress > 500 ? "Discipline" : "Learning"));
+            
+            // Ekstrak data pengajuan jika ada
+            $dataPengajuan = $pengajuanUser[$umkm->idUsers] ?? null;
+
             return [
                 'id' => $umkm->id,
                 'user_id' => $umkm->idUsers, 
@@ -225,8 +234,10 @@ class InvestorUmkmListPages extends Page
                     'link' => $s->link
                 ])->toArray(),
                 
-                // Meneruskan Status Pengajuan (0, 1, atau null)
-                'status_pengajuan_keuangan' => $pengajuanStatus[$umkm->idUsers] ?? null,
+                // Variabel yang dibutuhkan untuk action di view
+                'status_pengajuan_keuangan' => $dataPengajuan->status_pengajuan ?? null,
+                'waktu_pertemuan' => $dataPengajuan->waktu_pertemuan ?? null,
+                'nominal_pendanaan' => $dataPengajuan->nominal_pendanaan ?? null,
             ];
         })->toArray();
     }
@@ -251,7 +262,7 @@ class InvestorUmkmListPages extends Page
 
         PengajuanDataKeuangan::create([
             'idUsers' => Auth::id(),
-            'title' => Auth::user()->name . ' Mengajukan permintaan untuk dapat melihat data keuangan Umkm',
+            'title' => Auth::user()->name . ' Mengajukan permintaan untuk dapat melihat data keuangan UMKM',
             'umkm_target' => $this->selectedUmkm['user_id'],
             'keterangan' => $this->alasanPengajuan,
             'status_pengajuan' => 0, // Default pending
@@ -264,5 +275,88 @@ class InvestorUmkmListPages extends Page
             ->title('Pengajuan Terkirim')
             ->success()
             ->send();
+    }
+
+    public function submitPertemuan()
+    {
+        $this->validate([
+            'waktuPertemuan' => 'required|date',
+        ], [
+            'waktuPertemuan.required' => 'Waktu pertemuan wajib diisi.',
+            'waktuPertemuan.date' => 'Format waktu tidak valid.',
+        ]);
+
+        $pengajuan = PengajuanDataKeuangan::where('idUsers', Auth::id())
+            ->where('umkm_target', $this->selectedUmkm['user_id'])
+            ->where('status_pengajuan', 1)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($pengajuan) {
+            $pengajuan->update([
+                'waktu_pertemuan' => $this->waktuPertemuan,
+            ]);
+
+            $this->reset('waktuPertemuan');
+            $this->dispatch('close-modal', id: 'modal-ajukan-pertemuan');
+
+            $this->selectedUmkm['waktu_pertemuan'] = $pengajuan->waktu_pertemuan;
+
+            Notification::make()
+                ->title('Jadwal Pertemuan Berhasil Diatur')
+                ->success()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Gagal mengatur pertemuan')
+                ->body('Pengajuan data keuangan belum disetujui.')
+                ->danger()
+                ->send();
+        }
+    }
+
+    public function submitPendanaan()
+    {
+        $this->validate([
+            'nominalPendanaan' => 'required|numeric|min:10000', // Asumsi minimal pendanaan
+        ], [
+            'nominalPendanaan.required' => 'Nominal pendanaan wajib diisi.',
+            'nominalPendanaan.numeric' => 'Format nominal pendanaan tidak valid.',
+            'nominalPendanaan.min' => 'Nominal minimal Rp 10.000.',
+        ]);
+
+        $pengajuan = PengajuanDataKeuangan::where('idUsers', Auth::id())
+            ->where('umkm_target', $this->selectedUmkm['user_id'])
+            ->where('status_pengajuan', 1) // Hanya bisa didanai jika sudah disetujui
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($pengajuan) {
+            $pengajuan->update([
+                'nominal_pendanaan' => $this->nominalPendanaan,
+                'status_pengajuan' => 2, // Menggunakan 2 (Sudah didanai) sesuai file migrasi Anda
+            ]);
+
+            $nominal = $this->nominalPendanaan; // simpan sementara sebelum direset
+            
+            $this->reset('nominalPendanaan');
+            $this->dispatch('close-modal', id: 'modal-beri-pendanaan');
+
+            // Update UI State seketika tanpa perlu refresh
+            $this->selectedUmkm['status_pengajuan_keuangan'] = 2;
+            $this->selectedUmkm['nominal_pendanaan'] = $nominal;
+
+            Notification::make()
+                ->title('Pendanaan Berhasil Diberikan')
+                ->body('Status UMKM kini telah diperbarui.')
+                ->success()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Gagal memberikan pendanaan')
+                ->body('Pengajuan tidak ditemukan atau belum valid untuk didanai.')
+                ->danger()
+                ->send();
+        }
     }
 }

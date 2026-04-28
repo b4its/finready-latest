@@ -49,15 +49,17 @@ class UmkmPengajuanDataKeuangansTable
                     ->label('Status Pengajuan')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        '0' => 'Tidak Diterima',
-                        '1' => 'Diterima',
-                        default => 'Draft',
-                    })
-                    ->color(fn (string $state): string => match ($state) {
-                        '0' => 'danger',
-                        '1' => 'success',
-                        default => 'gray',
-                    })
+                          '0' => 'Tidak Diterima',
+                          '1' => 'Diterima',
+                          '2' => 'Telah Didanai',
+                          'default' => 'Draft',
+                      })
+                      ->color(fn (string $state): string => match ($state) {
+                          '0' => 'danger',
+                          '1' => 'success',
+                          '2' => 'success',
+                          default => 'gray',
+                      })
                     ->searchable()
                     ->sortable(),
             ])
@@ -75,8 +77,6 @@ class UmkmPengajuanDataKeuangansTable
                     ->infolist([
                         Section::make('Informasi Pengajuan')
                             ->schema([
-                                TextEntry::make('row_num')
-                                    ->label('Nomor Urut'),
                                 TextEntry::make('umkmTarget.name')
                                     ->label('Nama Investor'),
                                 TextEntry::make('title')
@@ -87,13 +87,23 @@ class UmkmPengajuanDataKeuangansTable
                                     ->formatStateUsing(fn (string $state): string => match ($state) {
                                         '0' => 'Tidak Diterima',
                                         '1' => 'Diterima',
-                                        default => 'Draft',
+                                        '2' => 'Telah Didanai',
+                                        'default' => 'Draft',
                                     })
                                     ->color(fn (string $state): string => match ($state) {
                                         '0' => 'danger',
                                         '1' => 'success',
+                                        '2' => 'success',
                                         default => 'gray',
                                     }),
+                                TextEntry::make('nominal_pendanaan')
+                                    ->label('Nominal Pendanaan')
+                                    ->numeric(
+                                        decimalPlaces: 0, // Memaksa desimal menjadi nol
+                                        locale: 'id',     // Memastikan pemisah ribuan menggunakan titik (.)
+                                    )
+                                    ->prefix('Rp ')       // Menambahkan simbol Rp di depan
+                                    ->default(0),
                                 TextEntry::make('created_at')
                                     ->label('Tanggal Pengajuan')
                                     ->dateTime('d M Y H:i'),

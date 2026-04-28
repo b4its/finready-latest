@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['idUsers', 'umkm_target','title', 'keterangan', 'status_pengajuan'])]
+#[Fillable(['idUsers', 'umkm_target','title', 'keterangan', 'status_pengajuan', 'waktu_pertemuan', 'nominal_pendanaan'])]
 class PengajuanDataKeuangan extends Model
 {
     //

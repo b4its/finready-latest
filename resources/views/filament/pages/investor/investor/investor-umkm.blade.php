@@ -189,28 +189,60 @@
                                 {{-- Action Buttons Area --}}
                                 <div class="border-t border-gray-100 dark:border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-center gap-4">
                                     
-                                    @if($umkm['status_pengajuan_keuangan'] === 1)
-                                        {{-- Tampilan jika DISETUJUI: Muncul Tombol Cetak Dokumen --}}
+                                    @if($umkm['status_pengajuan_keuangan'] == 2)
+                                        {{-- Tampilan jika TELAH DIDANAI (Status 2) --}}
+                                        <button type="button" disabled class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-white bg-green-600 border border-transparent font-medium leading-5 rounded-lg text-sm px-6 py-3 cursor-not-allowed shadow-sm transition-all">
+                                            <x-heroicon-o-check-badge class="w-5 h-5" />
+                                            UMKM Telah Didanai (Rp {{ number_format($umkm['nominal_pendanaan'] ?? 0, 0, ',', '.') }})
+                                        </button>
+
+                                    @elseif($umkm['status_pengajuan_keuangan'] == 1)
+                                        {{-- Tampilan jika DISETUJUI --}}
                                         <button type="button" x-on:click="$dispatch('open-modal', { id: 'modal-cetak-dokumen' })" class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-400 hover:bg-emerald-500 hover:text-white focus:ring-4 focus:ring-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white dark:focus:ring-emerald-900 font-medium leading-5 rounded-lg text-sm px-6 py-3 focus:outline-none transition-all duration-200 cursor-pointer shadow-sm">
                                             <x-heroicon-o-printer class="w-5 h-5" />
                                             Cetak Dokumen
                                         </button>
 
+                                        @if(!empty($umkm['waktu_pertemuan']))
+                                            {{-- Jika Waktu Pertemuan Sudah Diatur, Munculkan Opsi Beri Pendanaan --}}
+                                            <div class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-indigo-700 bg-indigo-50 border border-indigo-400 dark:bg-indigo-900/20 dark:border-indigo-600 dark:text-indigo-400 font-medium leading-5 rounded-lg text-sm px-6 py-3 shadow-sm">
+                                                <x-heroicon-o-calendar class="w-5 h-5" />
+                                                Jadwal: {{ \Carbon\Carbon::parse($umkm['waktu_pertemuan'])->format('d M Y H:i') }}
+                                            </div>
+
+                                            <button type="button" x-on:click="$dispatch('open-modal', { id: 'modal-beri-pendanaan' })" class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-teal-700 bg-teal-50 border border-teal-400 hover:bg-teal-500 hover:text-white focus:ring-4 focus:ring-teal-200 dark:bg-teal-900/20 dark:border-teal-600 dark:text-teal-400 dark:hover:bg-teal-600 dark:hover:text-white dark:focus:ring-teal-900 font-medium leading-5 rounded-lg text-sm px-6 py-3 focus:outline-none transition-all duration-200 cursor-pointer shadow-sm">
+                                                <x-heroicon-o-banknotes class="w-5 h-5" />
+                                                Beri Pendanaan
+                                            </button>
+                                        @else
+                                            {{-- Jika Belum Ada Pertemuan --}}
+                                            <button type="button" x-on:click="$dispatch('open-modal', { id: 'modal-ajukan-pertemuan' })" class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-indigo-700 bg-indigo-50 border border-indigo-400 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:ring-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-600 dark:hover:text-white dark:focus:ring-indigo-900 font-medium leading-5 rounded-lg text-sm px-6 py-3 focus:outline-none transition-all duration-200 cursor-pointer shadow-sm">
+                                                <x-heroicon-o-calendar-days class="w-5 h-5" />
+                                                Ajukan Pertemuan
+                                            </button>
+                                        @endif
+
                                     @elseif($umkm['status_pengajuan_keuangan'] === 0)
-                                        {{-- Tampilan jika PENDING: Tombol Menunggu --}}
+                                        {{-- Tampilan jika PENDING --}}
                                         <button type="button" disabled class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-gray-500 bg-gray-100 border border-gray-200 font-medium leading-5 rounded-lg text-sm px-6 py-3 cursor-not-allowed shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 transition-all">
                                             <x-heroicon-o-clock class="w-5 h-5" />
                                             Menunggu persetujuan dari pihak UMKM
                                         </button>
 
                                     @else
-                                        {{-- Tampilan DEFAULT (Belum Ada Data / Ditolak): Tombol Ajukan --}}
+                                        {{-- Tampilan DEFAULT (Belum Ada Data) --}}
                                         <button type="button" x-on:click="$dispatch('open-modal', { id: 'modal-pengajuan' })" class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-yellow-700 bg-yellow-50 border border-yellow-400 hover:bg-yellow-500 hover:text-white focus:ring-4 focus:ring-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-600 dark:text-yellow-400 dark:hover:bg-yellow-600 dark:hover:text-white dark:focus:ring-yellow-900 font-medium leading-5 rounded-lg text-sm px-6 py-3 focus:outline-none transition-all duration-200 cursor-pointer shadow-sm">
                                             <x-heroicon-o-document-text class="w-5 h-5" />
                                             Ajukan Informasi Lanjutan
                                         </button>
                                     @endif
-
+                                    
+                                    <a href="https://wa.me/{{ $selectedUmkm['phone'] ?? '' }}?text=Halo,%20perkenalkan%20saya%20{{ Auth::user()->name }},%20bolehkah%20kita%20berdiskusi%20lebih%20lanjut%20mengenai%20usaha%20yang%20sedang%20anda%20jalani?" target="_blank" class="w-full md:w-auto inline-flex justify-center items-center gap-2 text-green-700 bg-green-50 border border-green-400 hover:bg-green-500 hover:text-white focus:ring-4 focus:ring-green-200 dark:bg-green-900/20 dark:border-green-600 dark:text-green-400 dark:hover:bg-green-600 dark:hover:text-white dark:focus:ring-green-900 font-medium leading-5 rounded-lg text-sm px-6 py-3 focus:outline-none transition-all duration-200 cursor-pointer shadow-sm">
+                                        <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.653a11.883 11.883 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                        </svg>
+                                        Hubungi UMKM melalui WhatsApp
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -378,6 +410,127 @@
                     class="font-bold min-w-[140px]">
                     <span wire:loading.remove wire:target="prosesCetak">Proses Cetak</span>
                     <span wire:loading wire:target="prosesCetak">Memproses...</span>
+                </x-filament::button>
+            </div>
+        </x-slot>
+    </x-filament::modal>
+
+    {{-- MODAL 3: AJUKAN PERTEMUAN --}}
+    <x-filament::modal id="modal-ajukan-pertemuan" width="md" display-classes="block">
+        <x-slot name="heading">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+                    <x-heroicon-o-calendar-days class="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                    <span class="block text-xl font-bold tracking-tight text-gray-950 dark:text-white">
+                        Atur Jadwal Pertemuan
+                    </span>
+                    <span class="block text-sm font-normal text-gray-500 dark:text-gray-400 mt-1">
+                        Tentukan waktu untuk mendiskusikan investasi.
+                    </span>
+                </div>
+            </div>
+        </x-slot>
+
+        <div class="py-4 space-y-5">
+            <div class="space-y-2">
+                <label for="waktuPertemuan" class="inline-block text-sm font-semibold text-gray-800 dark:text-gray-200">
+                    Tanggal & Waktu Pertemuan
+                </label>
+                <input 
+                    type="datetime-local" 
+                    id="waktuPertemuan" 
+                    wire:model="waktuPertemuan" 
+                    class="block w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 focus:ring-4 transition-all duration-200 text-sm p-3"
+                >
+                @error('waktuPertemuan') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+            </div>
+        </div>
+
+        <x-slot name="footer">
+            <div class="flex items-center justify-end gap-3 w-full border-t border-gray-100 dark:border-gray-800 pt-5">
+                <x-filament::button color="gray" tag="button" variant="ghost" x-on:click="close" class="font-medium">
+                    Batal
+                </x-filament::button>
+
+                <x-filament::button 
+                    type="button" 
+                    wire:click="submitPertemuan" 
+                    color="indigo" 
+                    icon="heroicon-m-calendar" 
+                    icon-position="after" 
+                    wire:loading.attr="disabled"
+                    class="font-bold min-w-[140px]">
+                    <span wire:loading.remove wire:target="submitPertemuan">Simpan Jadwal</span>
+                    <span wire:loading wire:target="submitPertemuan">Menyimpan...</span>
+                </x-filament::button>
+            </div>
+        </x-slot>
+    </x-filament::modal>
+
+    {{-- MODAL 4: BERI PENDANAAN --}}
+    <x-filament::modal id="modal-beri-pendanaan" width="md" display-classes="block">
+        <x-slot name="heading">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
+                    <x-heroicon-o-banknotes class="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                </div>
+                <div>
+                    <span class="block text-xl font-bold tracking-tight text-gray-950 dark:text-white">
+                        Beri Pendanaan
+                    </span>
+                    <span class="block text-sm font-normal text-gray-500 dark:text-gray-400 mt-1">
+                        Masukkan nominal investasi yang disepakati.
+                    </span>
+                </div>
+            </div>
+        </x-slot>
+
+        <div class="py-4 space-y-5">
+            <div class="space-y-2" x-data="{ 
+                raw: $wire.entangle('nominalPendanaan'),
+                formatRupiah(value) {
+                    if (!value) return '';
+                    let val = value.toString().replace(/[^0-9]/g, '');
+                    return val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                }
+            }">
+                <label for="nominalPendanaan" class="inline-block text-sm font-semibold text-gray-800 dark:text-gray-200">
+                    Nominal Pendanaan (Rp)
+                </label>
+                <input 
+                    type="text" 
+                    id="nominalPendanaan" 
+                    x-bind:value="formatRupiah(raw)"
+                    x-on:input="
+                        let cleanValue = $event.target.value.replace(/[^0-9]/g, '');
+                        raw = cleanValue;
+                        $event.target.value = formatRupiah(cleanValue);
+                    "
+                    placeholder="Contoh: 10.000.000"
+                    class="block w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-teal-500 focus:ring-teal-500/20 focus:ring-4 transition-all duration-200 text-sm p-3"
+                >
+                @error('nominalPendanaan') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+            </div>
+        </div>
+
+        <x-slot name="footer">
+            <div class="flex items-center justify-end gap-3 w-full border-t border-gray-100 dark:border-gray-800 pt-5">
+                <x-filament::button color="gray" tag="button" variant="ghost" x-on:click="close" class="font-medium">
+                    Batal
+                </x-filament::button>
+
+                <x-filament::button 
+                    type="button" 
+                    wire:click="submitPendanaan" 
+                    color="success" 
+                    icon="heroicon-m-check-circle" 
+                    icon-position="after" 
+                    wire:loading.attr="disabled"
+                    class="font-bold min-w-[140px]">
+                    <span wire:loading.remove wire:target="submitPendanaan">Konfirmasi Pendanaan</span>
+                    <span wire:loading wire:target="submitPendanaan">Memproses...</span>
                 </x-filament::button>
             </div>
         </x-slot>
