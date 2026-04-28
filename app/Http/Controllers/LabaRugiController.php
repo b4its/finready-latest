@@ -15,7 +15,7 @@ class LabaRugiController extends Controller
     {
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
-        $idUsers = auth()->id() ?? 1;
+        $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
 
         // 1. Tarik semua Jurnal & Saldo Awal sekaligus (Optimasi)
         $semuaJurnal = JurnalUmum::with('details')

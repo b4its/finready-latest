@@ -7,6 +7,7 @@ use App\Filament\Resources\Umkm\UmkmAkunKeuangans\UmkmAkunKeuanganResource;
 use App\Filament\Resources\Umkm\UmkmBukuBesars\UmkmBukuBesarResource;
 use App\Filament\Resources\Umkm\UmkmJurnalUmumAslis\UmkmJurnalUmumAsliResource;
 use App\Filament\Resources\Umkm\UmkmJurnalUmums\UmkmJurnalUmumResource;
+use App\Filament\Resources\Umkm\UmkmPengajuanDataKeuangans\UmkmPengajuanDataKeuanganResource;
 use App\Filament\Resources\Umkm\UmkmPoins\UmkmPoinResource;
 use App\Filament\Resources\Umkm\UmkmSaldoAwalAslis\UmkmSaldoAwalAsliResource;
 use App\Filament\Resources\Umkm\UmkmSaldoAwals\UmkmSaldoAwalResource;
@@ -14,6 +15,7 @@ use App\Filament\Resources\Umkm\UmkmSifatAkunAslis\UmkmSifatAkunAsliResource;
 use App\Filament\Resources\Umkm\UmkmSifatAkunKeuangans\UmkmSifatAkunKeuanganResource;
 use App\Filament\Widgets\Umkm\Chart\UmkmMutasiChart;
 use App\Filament\Widgets\Umkm\UmkmStatsOverview;
+use App\Models\LearnProgress;
 use Blade;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -34,12 +36,14 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class UmkmPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+
         return $panel
             ->default()
             ->id('umkm')
@@ -71,35 +75,49 @@ class UmkmPanelProvider extends PanelProvider
                 fn () => view('filament.hooks.halaman-utama-button'),
             )
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
-                return $builder
-                    ->items([
-                        // 1. Dashboard selalu di atas
-                        ...Dashboard::getNavigationItems(),
-                        ...UmkmPoinResource::getNavigationItems(),
-                            NavigationItem::make('Pembelajaran')
-                            ->url(fn () => route('learning.index'))
-                            ->icon('heroicon-o-book-open')
-                            ->sort(1),
-                    ])
-                    ->groups([
-                        // 2. Grup Akun di urutan kedua
-                        NavigationGroup::make('Uji Coba')
+                    $totalPoints = 0;
+                    if (Auth::check()) {
+                        $totalPoints = LearnProgress::where('idUsers', Auth::id())->sum('point');
+                    }
+
+                    $isStructured = $totalPoints > 500;
+                    $isReady = $totalPoints > 1500;
+
+                    // Siapkan array groups
+                    $navGroups = [];
+
+                    if ($isStructured) {
+                        $navGroups[] = NavigationGroup::make('Uji Coba')
                             ->items([
                                 ...UmkmAkunKeuanganResource::getNavigationItems(),
                                 ...UmkmSifatAkunKeuanganResource::getNavigationItems(),
                                 ...UmkmSaldoAwalResource::getNavigationItems(),
                                 ...UmkmJurnalUmumResource::getNavigationItems(),
-                                ]),
-                        NavigationGroup::make('Akun Riil') // Grup ini juga dikasih icon biar seragam
-                            ->items([
-                                ...UmkmAkunAsliResource::getNavigationItems(),
-                                ...UmkmSifatAkunAsliResource::getNavigationItems(),
-                                ...UmkmSaldoAwalAsliResource::getNavigationItems(),
-                                ...UmkmJurnalUmumAsliResource::getNavigationItems(),
-                            ]),
-                        
-                    ]);
-            })
+                            ]);
+                    
+                    }
+                    // Selalu tambahkan grup Akun Riil
+                    if ($isReady) {
+                    $navGroups[] = NavigationGroup::make('Akun Riil')
+                        ->items([
+                            ...UmkmAkunAsliResource::getNavigationItems(),
+                            ...UmkmSifatAkunAsliResource::getNavigationItems(),
+                            ...UmkmSaldoAwalAsliResource::getNavigationItems(),
+                            ...UmkmJurnalUmumAsliResource::getNavigationItems(),
+                        ]);
+                    }
+                    return $builder
+                        ->items([
+                            ...Dashboard::getNavigationItems(),
+                            ...UmkmPoinResource::getNavigationItems(),
+                            ...UmkmPengajuanDataKeuanganResource::getNavigationItems(),
+                            NavigationItem::make('Pembelajaran')
+                                ->url(fn () => route('learning.index'))
+                                ->icon('heroicon-o-book-open')
+                                ->sort(1),
+                        ])
+                        ->groups($navGroups); // Masukkan variabel array groups di sini
+                })
             ->widgets([
                 UmkmStatsOverview::class,
                 UmkmMutasiChart::class

@@ -20,7 +20,7 @@ public function index(Request $request)
         $tahun = $request->query('tahun', date('Y'));
         
         // Menggunakan ID User yang sedang login (fallback ke 1 jika null)
-        $idUsers = auth()->id() ?? 1; 
+        $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
 
         // 2. Ambil Akun Keuangan (Tangkap yang spesifik milik user ATAU akun global yang NULL)
         $akunKeuangans = AkunKeuangan::where(function($query) use ($idUsers) {

@@ -88,7 +88,7 @@
                             <th width="17%">Credit</th>
                         </tr>
                     </thead>
-                    <tbody>
+<tbody>
                         @php
                             $currentDate = '';
                             $currentFaktur = '';
@@ -108,23 +108,19 @@
                                         @php $currentFaktur = $item->no_faktur; @endphp
                                     @endif
                                 </td>
-                                <td class="{{ $item->is_debit ? '' : 'desc-indent' }}">{{ $item->akun_name }}</td>
-                                <td class="text-center">{{ $item->ref }}</td>
-                                <td class="text-right">{{ $item->debit > 0 ? number_format($item->debit, 0, ',', '.') : '' }}</td>
-                                <td class="text-right">{{ $item->kredit > 0 ? number_format($item->kredit, 0, ',', '.') : '' }}</td>
+                                
+                                @if($item->is_keterangan_row)
+                                    <td class="text-red desc-indent">({{ $item->keterangan }})</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                @else
+                                    <td class="{{ $item->is_debit ? '' : 'desc-indent' }}">{{ $item->akun_name }}</td>
+                                    <td class="text-center">{{ $item->ref }}</td>
+                                    <td class="text-right">{{ $item->debit > 0 ? number_format($item->debit, 0, ',', '.') : '' }}</td>
+                                    <td class="text-right">{{ $item->kredit > 0 ? number_format($item->kredit, 0, ',', '.') : '' }}</td>
+                                @endif
                             </tr>
-                            
-                            {{-- Tampilkan baris keterangan tambahan jika ada --}}
-                            @if($item->keterangan)
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td class="text-red">({{ $item->keterangan }})</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            @endif
                         @endforeach
 
                         {{-- Baris Total --}}

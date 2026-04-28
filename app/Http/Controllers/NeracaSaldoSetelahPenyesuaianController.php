@@ -17,7 +17,7 @@ class NeracaSaldoSetelahPenyesuaianController extends Controller
     {
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
-        $idUsers = auth()->id() ?? 1;
+        $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
 
         // Ambil semua akun keuangan
         $akunKeuangans = AkunKeuangan::where(function($query) use ($idUsers) {

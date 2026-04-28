@@ -18,7 +18,7 @@ public function index(Request $request)
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
         
-        $idUsers = auth()->id() ?? 1;
+        $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
 
         $akunKeuangans = AkunKeuangan::where(function($query) use ($idUsers) {
                 $query->where('idUsers', $idUsers)->orWhereNull('idUsers');

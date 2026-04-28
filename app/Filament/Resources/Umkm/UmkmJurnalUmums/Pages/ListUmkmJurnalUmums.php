@@ -41,7 +41,6 @@ class ListUmkmJurnalUmums extends ListRecords
                             'buku_besar' => 'Buku Besar Umum',
                             'neraca_saldo' => 'Neraca Saldo',
                             'jurnal_penyesuaian' => 'Jurnal Penyesuaian',
-                            'neraca_saldo_setelah_penyesuaian' => 'Neraca Saldo Setelah Penyesuaian',
                             'laba_rugi' => 'Laba Rugi',
                             'perubahan_modal' => 'Perubahan Modal',
                             'neraca' => 'Neraca',
@@ -71,35 +70,32 @@ class ListUmkmJurnalUmums extends ListRecords
                 ])
                 ->action(function (array $data) {
                     if ($data['jenis_dokumen'] === 'jurnal_umum') {
-                        return redirect()->to(route('jurnal_umum.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('jurnal_umum.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     }else if ($data['jenis_dokumen'] === 'buku_besar') {
-                        return redirect()->to(route('buku_besar.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('buku_besar.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     } elseif ($data['jenis_dokumen'] === 'neraca_saldo') {
-                        return redirect()->to(route('neraca_saldo.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('neraca_saldo.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     } else if ($data['jenis_dokumen'] === 'jurnal_penyesuaian') {
                         // Arahkan ke rute Jurnal Penyesuaian
-                        return redirect()->to(route('jurnal_penyesuaian.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('jurnal_penyesuaian.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     
                     } else if ($data['jenis_dokumen'] === 'laba_rugi') {
                         // Arahkan ke rute Jurnal Penyesuaian
-                        return redirect()->to(route('laba_rugi.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('laba_rugi.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     
                     } else if ($data['jenis_dokumen'] === 'perubahan_modal') {
                         // Arahkan ke rute Jurnal Penyesuaian
-                        return redirect()->to(route('perubahan_modal.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('perubahan_modal.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     
                     } else if ($data['jenis_dokumen'] === 'neraca') {
                         // Arahkan ke rute Jurnal Penyesuaian
-                        return redirect()->to(route('neraca.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('neraca.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     
-                    } else if ($data['jenis_dokumen'] === 'arus_kas') {
+                    } elseif ($data['jenis_dokumen'] === 'arus_kas') {
                         // Arahkan ke rute Jurnal Penyesuaian
-                        return redirect()->to(route('arus_kas.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
+                        return redirect()->to(route('arus_kas.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun'], 'idUsers' => Auth::user()->id]));
                     
-                    } elseif ($data['jenis_dokumen'] === 'neraca_saldo_setelah_penyesuaian') {
-                        // Arahkan ke rute Jurnal Penyesuaian
-                        return redirect()->to(route('neraca_saldo_setelah_penyesuaian.index', ['bulan' => $data['bulan'], 'tahun' => $data['tahun']]));
-                    }
+                    } 
                 }),
         ];
     }

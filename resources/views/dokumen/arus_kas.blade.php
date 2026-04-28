@@ -199,7 +199,9 @@
                         @endforeach
                         <tr>
                             <td class="fw-bold">Total Arus Kas Bersih Dari Aktivitas Pendanaan</td>
-                            <td class="text-right fw-bold">{{ number_format($bersihPendanaan, 0, ',', '.') }}</td>
+                            <td class="text-right fw-bold">
+                                {{ $bersihPendanaan < 0 ? '(' . number_format(abs($bersihPendanaan), 0, ',', '.') . ')' : number_format($bersihPendanaan, 0, ',', '.') }}
+                            </td>
                             <td></td>
                         </tr>
 

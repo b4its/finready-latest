@@ -7,7 +7,7 @@ use App\Filament\Resources\Umkm\UmkmPoins\Pages\EditUmkmPoin;
 use App\Filament\Resources\Umkm\UmkmPoins\Pages\ListUmkmPoins;
 use App\Filament\Resources\Umkm\UmkmPoins\Schemas\UmkmPoinForm;
 use App\Filament\Resources\Umkm\UmkmPoins\Tables\UmkmPoinsTable;
-use App\Models\UmkmPoin;
+use App\Models\Poin;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class UmkmPoinResource extends Resource
 {
-    protected static ?string $model = UmkmPoin::class;
+    protected static ?string $model = Poin::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

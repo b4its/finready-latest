@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Investor\InvestorUmkmLists\Schemas;
+namespace App\Filament\Resources\Umkm\UmkmPengajuanDataKeuangans\Schemas;
 
 use Filament\Schemas\Schema;
 
-class InvestorUmkmListForm
+class UmkmPengajuanDataKeuanganForm
 {
     public static function configure(Schema $schema): Schema
     {

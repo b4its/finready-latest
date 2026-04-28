@@ -16,7 +16,7 @@ class JurnalPenyesuaianController extends Controller
         // Set default filter ke bulan dan tahun saat ini
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
-        $idUsers = auth()->id() ?? 1; 
+        $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
 
         // Menggunakan algoritma query Jurnal Umum (Tanpa ->where('tipe', 3))
         $jurnals = JurnalUmum::with(['akunKeuangan', 'details'])
