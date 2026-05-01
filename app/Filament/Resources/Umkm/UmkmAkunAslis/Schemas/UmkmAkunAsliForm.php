@@ -31,14 +31,6 @@ class UmkmAkunAsliForm
                         "lain-lain" => 'Pendapatan Lain Lain',
                     ])
                     ->required()
-                    ->unique(
-                        ignoreRecord: true,
-                        // Logika agar unique divalidasi berdasarkan user yang sedang login
-                        modifyRuleUsing: fn (Unique $rule) => $rule->where('idUsers', Auth::id())
-                    )
-                    ->validationMessages([
-                        'unique' => 'Kategori ini sudah Anda tambahkan sebelumnya. Silakan pilih kategori lain.',
-                    ])
                     ->live(onBlur: false) // Eksekusi instan khas V5
                     ->afterStateUpdated(function (Set $set, ?string $state) {
                         if (!$state) {

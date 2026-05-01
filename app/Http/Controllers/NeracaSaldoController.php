@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AkunKeuangan;
 use App\Models\JurnalUmum;
 use App\Models\SaldoAwal;
+use App\Models\UmkmProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -13,16 +14,38 @@ class NeracaSaldoController extends Controller
     /**
      * Display a listing of the resource.
      */
-public function index(Request $request)
+    public function index(Request $request)
     {
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
         
         $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
+        
+        // Tambahkan ->first() di sini
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         $akunKeuangans = AkunKeuangan::where(function($query) use ($idUsers) {
                 $query->where('idUsers', $idUsers)->orWhereNull('idUsers');
             })
+            // Pengurutan utama berdasarkan kategori
+            ->orderByRaw("FIELD(category, 'aset', 'kewajiban', 'modal', 'pendapatan', 'beban_biaya')")
+            // Pengurutan sekunder berdasarkan nama akun dengan pencocokan kata (LIKE)
+            ->orderByRaw("
+                CASE 
+                    WHEN name LIKE '%Kas%' THEN 1
+                    WHEN name LIKE '%Piutang%' THEN 2
+                    WHEN name LIKE '%Perlengkapan%' THEN 3
+                    WHEN name LIKE '%Persediaan%' THEN 4
+                    WHEN name LIKE '%Peralatan%' THEN 5
+                    WHEN name LIKE '%Akumulasi%' THEN 6
+                    WHEN name LIKE '%Hutang%' THEN 7
+                    WHEN name LIKE '%Penjualan%' THEN 8
+                    WHEN name LIKE '%Beban%' THEN 9
+                    ELSE 10 
+                END ASC
+            ")
+            // Pengurutan tersier berdasarkan kode akun agar lebih rapi
+            ->orderBy('no_referensi', 'asc')
             ->get()
             ->map(function ($akun) use ($bulan, $tahun) {
                 
@@ -63,7 +86,7 @@ public function index(Request $request)
                     'nama_akun' => $akun->name,
                     'debet' => $debetAkhir,
                     'kredit' => $kreditAkhir,
-                    'saldo_akhir' => $saldoBerjalan
+                    'saldo_akhir' => $saldoBerjalan,
                 ];
             })
             // Filter: Hanya tampilkan akun yang memiliki saldo (tidak nol)
@@ -81,7 +104,7 @@ public function index(Request $request)
         $namaBulan = Carbon::createFromFormat('m', $bulanFormatted)->translatedFormat('F');
         $periodeString = "PER {$lastDayOfMonth} " . strtoupper($namaBulan) . " {$tahun}";
 
-        return view('dokumen.neraca_saldo', compact('akunKeuangans', 'periodeString', 'totalDebet', 'totalKredit'));
+        return view('dokumen.neraca_saldo', compact('akunKeuangans', 'periodeString', 'totalDebet', 'totalKredit', 'detailProfilUMKM'));
     }
 
     /**

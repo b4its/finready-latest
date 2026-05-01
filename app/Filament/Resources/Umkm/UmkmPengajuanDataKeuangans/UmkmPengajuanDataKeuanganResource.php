@@ -44,7 +44,7 @@ class UmkmPengajuanDataKeuanganResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return 'Pengajaun Data Keuangan';
+        return 'Pengajuan Data Keuangan';
     }
     public static function getNavigationIcon(): string
     {

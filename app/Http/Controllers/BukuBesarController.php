@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AkunKeuangan;
 use App\Models\JurnalUmum;
 use App\Models\SaldoAwal;
+use App\Models\UmkmProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -21,6 +22,7 @@ public function index(Request $request)
         
         // Menggunakan ID User yang sedang login (fallback ke 1 jika null)
         $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         // 2. Ambil Akun Keuangan (Tangkap yang spesifik milik user ATAU akun global yang NULL)
         $akunKeuangans = AkunKeuangan::where(function($query) use ($idUsers) {
@@ -95,7 +97,7 @@ public function index(Request $request)
         $namaBulan = Carbon::createFromFormat('m', $bulanFormatted)->translatedFormat('F');
         $periodeString = $namaBulan . ' ' . $tahun;
 
-        return view('dokumen.buku_besar', compact('akunKeuangans', 'periodeString', 'tahun', 'namaBulan'));
+        return view('dokumen.buku_besar', compact('akunKeuangans', 'periodeString', 'tahun', 'namaBulan', 'detailProfilUMKM'));
     }
 
     /**

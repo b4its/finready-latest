@@ -85,7 +85,7 @@
             <div class="document-page">
                 
                 <div class="doc-header">
-                    <h1>Cafe Kopi Nusantara</h1>
+                    <h1>                {{ $detailProfilUMKM->name ?? "Cafe Kopi Nusantara" }}</h1>
                     <h2>JURNAL PENYESUAIAN</h2>
                     <p>{{ $periodeString }}</p>
                 </div>
@@ -223,6 +223,8 @@
             </div>
         </aside>
     </main>
-
+    <script>
+        window.print();
+    </script>
 </body>
 </html>

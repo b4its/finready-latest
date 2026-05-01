@@ -39,10 +39,12 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // $brandNames = 'Admin Panel';
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandName('Admin Panel')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -58,13 +60,16 @@ class AdminPanelProvider extends PanelProvider
                 fn (): string => Blade::render('@livewire(\App\Livewire\EditProfileModal::class)')
             )
             ->globalSearch(false)
-            ->brandName('Admin Panel')
             ->discoverResources(in: app_path('Filament/Resources/Admin'), for: 'App\Filament\Resources\Admin')
             ->discoverPages(in: app_path('Filament/Pages/Admin'), for: 'App\Filament\Pages\Admin')
             ->pages([
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets/Admin'), for: 'App\Filament\Widgets\Admin')
+            ->renderHook(
+                'panels::head.end', 
+                fn () => view('filament.hooks.custom-favicon'),
+            )
             ->renderHook(
                 'panels::auth.login.form.after',
                 fn () => view('filament.hooks.halaman-utama-button'),

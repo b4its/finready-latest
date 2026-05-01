@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JurnalUmum;
+use App\Models\UmkmProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -17,6 +18,7 @@ class JurnalPenyesuaianController extends Controller
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
         $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         // Menggunakan algoritma query Jurnal Umum (Tanpa ->where('tipe', 3))
         $jurnals = JurnalUmum::with(['akunKeuangan', 'details'])
@@ -90,7 +92,7 @@ class JurnalPenyesuaianController extends Controller
         $periodeString = "{$lastDayOfMonth} " . ucfirst($namaBulan) . " {$tahun}"; 
 
         return view('dokumen.jurnal_penyesuaian', compact(
-            'formattedJurnals', 'periodeString', 'namaBulan', 'totalDebit', 'totalKredit', 'rekap'
+            'formattedJurnals', 'periodeString', 'namaBulan', 'totalDebit', 'totalKredit', 'rekap', 'detailProfilUMKM'
         ));
     }
 

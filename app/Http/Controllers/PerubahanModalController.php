@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AkunKeuangan;
 use App\Models\JurnalUmum;
 use App\Models\SaldoAwal;
+use App\Models\UmkmProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,7 @@ class PerubahanModalController extends Controller
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
         $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         // 1. Tarik Data Jurnal & Saldo Awal
         $semuaJurnal = JurnalUmum::with('details')
@@ -107,7 +109,7 @@ class PerubahanModalController extends Controller
             'isLaba', 
             'penambahanModal', 
             'prive', 
-            'modalAkhir'
+            'modalAkhir', 'detailProfilUMKM'
         ));
     }
 }

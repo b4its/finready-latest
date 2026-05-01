@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AkunKeuangan;
 use App\Models\JurnalUmum;
 use App\Models\SaldoAwal;
+use App\Models\UmkmProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,8 @@ class NeracaController extends Controller
             ->whereMonth('periode', (int) $bulan)
             ->whereYear('periode', (int) $tahun)
             ->get();
+
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         $semuaSaldoAwal = SaldoAwal::with('detailAkunKeuangan')
             ->whereHas('detailAkunKeuangan', function($q) use ($idUsers) {
@@ -143,7 +146,7 @@ class NeracaController extends Controller
             'aktivaTetap', 'totalAktivaTetap', 'totalAktiva',
             'hutangPendek', 'totalHutangPendek',
             'hutangPanjang', 'totalHutangPanjang', 'totalHutang',
-            'modalAkhir', 'totalPasiva'
+            'modalAkhir', 'totalPasiva', 'detailProfilUMKM'
         ));
     }
 }

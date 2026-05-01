@@ -39,6 +39,36 @@
         }
     }
 
+// --- 1.5 LOGIKA EKSTRAKSI VIDEO ---
+    $isVideoType = strtolower($content->type ?? '') === 'video';
+    $videoEmbedUrl = '';
+    $isVideoDirect = false;
+
+    // Ambil data dari kolom link, jika kosong coba dari kolom url
+    $rawVideoLink = $content->link ?: ($content->url ?? '');
+
+    if ($isVideoType && !empty($rawVideoLink)) {
+        // Regex tingkat lanjut: Akan mendeteksi ID (11 karakter) dari segala jenis link YouTube
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $rawVideoLink, $match)) {
+            $videoId = $match[1]; // Mengambil tepat ID Videonya (contoh: hgp_gcyzXXE)
+            $videoEmbedUrl = 'https://www.youtube.com/embed/' . $videoId . '?rel=0';
+        } else {
+            // Fallback jika bukan link YouTube (Google Drive / Direct MP4)
+            $videoEmbedUrl = $rawVideoLink;
+            
+            // Konversi Google Drive view ke preview agar bisa di-iframe
+            if (str_contains($rawVideoLink, 'drive.google.com/file/d/')) {
+                $videoEmbedUrl = preg_replace('/\/view.*$/', '/preview', $rawVideoLink);
+            }
+            
+            // Cek apakah ekstensi langsung video (.mp4)
+            $ext = strtolower(pathinfo(parse_url($rawVideoLink, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION));
+            if (in_array($ext, ['mp4', 'webm', 'ogg'])) {
+                $isVideoDirect = true;
+            }
+        }
+    }
+
     // --- 2. LOGIKA PROGRES BELAJAR USER ---
     $completedContentIds = \App\Models\LearnProgress::where('idUsers', $user_account->id)
                             ->where('idModul', $moduleKey->id)
@@ -50,7 +80,6 @@
     $isGlobalUnlock = true;
     
     // --- 3. LOGIKA REDIRECT KE MATERI SELANJUTNYA ---
-    // Mencari urutan semua materi di seluruh course
     $allModulesForPath = \App\Models\Modul::with(['contents', 'rooms'])->get();
     $flatPath = [];
     foreach($allModulesForPath as $mod) {
@@ -62,11 +91,9 @@
         }
     }
 
-    // Tentukan URL materi berikutnya. Jika habis, kembali ke index.
     $nextUrl = route('learning.index'); 
     foreach($flatPath as $idx => $item) {
         if($item['type'] === 'content' && $item['id'] == $content->id) {
-            // Cek apakah ada index selanjutnya
             if(isset($flatPath[$idx + 1])) {
                 $nextUrl = $flatPath[$idx + 1]['url'];
             }
@@ -331,79 +358,117 @@
     </div>
   </nav>
 
-  <main class="viewer">
-    <div class="load-progress"><div class="load-progress-fill" id="loadFill"></div></div>
+<main class="viewer">
+    @if($isVideoType)
+      <div class="video-wrap" style="flex:1; display:flex; flex-direction:column; padding:32px 24px; background:#1a1814; overflow-y:auto;">
+        <div style="width:100%; max-width:900px; margin:0 auto; aspect-ratio:16/9; background:#000; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; flex-direction:column;">
+          
+          {{-- Cek apakah $videoEmbedUrl valid (tidak sekadar 'https://youtube//') --}}
+          @if(!empty($videoEmbedUrl) && strlen($videoEmbedUrl) > 20)
+            @if($isVideoDirect)
+              <video controls style="width:100%; height:100%;" src="{{ $videoEmbedUrl }}">
+                Browser Anda tidak mendukung pemutaran video secara langsung.
+              </video>
+            @else
+              <iframe src="{{ $videoEmbedUrl }}" style="width:100%; height:100%; border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            @endif
+          @else
+            {{-- Tampilan Error jika link di database rusak --}}
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" style="margin-bottom: 12px;">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <div style="color:#a1a1aa; font-size:14px; text-align:center;">
+              <b>Video Tidak Tersedia</b><br>
+              Format link video tidak valid atau rusak.
+            </div>
+          @endif
 
-    <div class="pdf-controls" id="pdfControls">
-      <select id="docSelector" onchange="switchDoc(this.value)" style="display:none; border: 1.5px solid var(--border); border-radius: 7px; padding: 4px 8px; font-size: 13px; font-weight: 500; background: var(--bg); color: var(--text); cursor: pointer; max-width: 200px; margin-right: 12px;"></select>
+        </div>
+        
+        <div style="max-width:900px; width:100%; margin:24px auto 0; display:flex; justify-content:flex-end;">
+          <button class="btn-complete" id="btnCompleteVideo" onclick="triggerCompletionAlert()" style="display:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Tandai Selesai Menonton
+          </button>
+        </div>
+      </div>
+    @else
+      <div class="load-progress"><div class="load-progress-fill" id="loadFill"></div></div>
 
-      <div class="ctrl-group page-nav" id="pdfNavWrapper">
-        <button class="ctrl-btn" id="btnPrev" onclick="changePage(-1)" disabled>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+      <div class="pdf-controls" id="pdfControls">
+        <select id="docSelector" onchange="switchDoc(this.value)" style="display:none; border: 1.5px solid var(--border); border-radius: 7px; padding: 4px 8px; font-size: 13px; font-weight: 500; background: var(--bg); color: var(--text); cursor: pointer; max-width: 200px; margin-right: 12px;"></select>
+
+        <div class="ctrl-group page-nav" id="pdfNavWrapper">
+          <button class="ctrl-btn" id="btnPrev" onclick="changePage(-1)" disabled>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <input id="pageInput" type="number" value="1" min="1">
+          <span style="color:var(--muted);font-size:12px">/ <span id="totalPagesLabel">—</span></span>
+          <button class="ctrl-btn" id="btnNext" onclick="changePage(1)" disabled>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+
+        <div class="ctrl-sep"></div>
+
+        <div class="ctrl-group" id="pdfZoomWrapper">
+          <button class="ctrl-btn" onclick="zoom(-0.2)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </button>
+          <select class="zoom-select" id="zoomSelect" onchange="setZoom(this.value)">
+            <option value="0.6">60%</option>
+            <option value="0.8">80%</option>
+            <option value="1" selected>100%</option>
+            <option value="1.25">125%</option>
+            <option value="1.5">150%</option>
+            <option value="2">200%</option>
+            <option value="fit">Fit Lebar</option>
+          </select>
+          <button class="ctrl-btn" onclick="zoom(0.2)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </button>
+        </div>
+
+        <div class="ctrl-sep"></div>
+
+        <button class="ctrl-btn" onclick="toggleFS()" title="Layar penuh">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         </button>
-        <input id="pageInput" type="number" value="1" min="1">
-        <span style="color:var(--muted);font-size:12px">/ <span id="totalPagesLabel">—</span></span>
-        <button class="ctrl-btn" id="btnNext" onclick="changePage(1)" disabled>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+
+        <div class="reading-est" id="readingEst">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="readingText">Menghitung...</span>
+        </div>
+      </div>
+
+      <div class="canvas-wrap" id="canvasWrap">
+        <div id="loadingState" style="display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:40px">
+          <div class="page-skeleton" style="height:780px;border-radius:3px"></div>
+          <div style="font-size:12px;color:#9e998f;font-family:'DM Mono',monospace">Memuat dokumen...</div>
+        </div>
+      </div>
+
+      <div class="complete-strip" id="completeStrip" style="display:none">
+        <div class="info">
+          <strong>{{ $content->title }}</strong>
+          <span> · Halaman <span id="stripPage">1</span> dari <span id="stripTotal">1</span></span>
+        </div>
+        <button class="btn-complete" id="btnComplete" onclick="triggerCompletionAlert()" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Tandai Selesai
         </button>
       </div>
-
-      <div class="ctrl-sep"></div>
-
-      <div class="ctrl-group" id="pdfZoomWrapper">
-        <button class="ctrl-btn" onclick="zoom(-0.2)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-        </button>
-        <select class="zoom-select" id="zoomSelect" onchange="setZoom(this.value)">
-          <option value="0.6">60%</option>
-          <option value="0.8">80%</option>
-          <option value="1" selected>100%</option>
-          <option value="1.25">125%</option>
-          <option value="1.5">150%</option>
-          <option value="2">200%</option>
-          <option value="fit">Fit Lebar</option>
-        </select>
-        <button class="ctrl-btn" onclick="zoom(0.2)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-        </button>
-      </div>
-
-      <div class="ctrl-sep"></div>
-
-      <button class="ctrl-btn" onclick="toggleFS()" title="Layar penuh">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-      </button>
-
-      <div class="reading-est" id="readingEst">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span id="readingText">Menghitung...</span>
-      </div>
-    </div>
-
-    <div class="canvas-wrap" id="canvasWrap">
-      <div id="loadingState" style="display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:40px">
-        <div class="page-skeleton" style="height:780px;border-radius:3px"></div>
-        <div style="font-size:12px;color:#9e998f;font-family:'DM Mono',monospace">Memuat dokumen...</div>
-      </div>
-    </div>
-
-    <div class="complete-strip" id="completeStrip" style="display:none">
-      <div class="info">
-        <strong>{{ $content->title }}</strong>
-        <span> · Halaman <span id="stripPage">1</span> dari <span id="stripTotal">1</span></span>
-      </div>
-      <button class="btn-complete" id="btnComplete" onclick="triggerCompletionAlert()" style="display:none;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-        Tandai Selesai
-      </button>
-    </div>
+    @endif
   </main>
 
   <aside class="right-panel">
     <div class="right-tabs">
       <div class="right-tab active" onclick="switchTab('info')" id="rtab-info">Info</div>
-      <div class="right-tab" onclick="switchTab('notes')" id="rtab-notes">Catatan</div>
+      @if(!$isVideoType)
       <div class="right-tab" onclick="switchTab('thumb')" id="rtab-thumb">Halaman</div>
+      @endif
     </div>
 
     <div class="right-body" id="rbody-info">
@@ -414,6 +479,7 @@
         </div>
       </div>
 
+      @if(!$isVideoType)
       <div class="info-section">
         <div class="info-label">Statistik Dokumen</div>
         <div class="stat-row">
@@ -440,14 +506,15 @@
           </div>
         </div>
       </div>
+      @endif
     </div>
 
     <div class="right-body hidden" id="rbody-notes">
       <div class="note-page-label">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
-        Catatan – Hal. <span id="notePageNum">1</span>
+        Catatan @if(!$isVideoType) – Hal. <span id="notePageNum">1</span> @endif
       </div>
-      <textarea id="noteTA" class="note-textarea" placeholder="Tulis catatan untuk halaman ini..."></textarea>
+      <textarea id="noteTA" class="note-textarea" placeholder="Tulis catatan untuk materi ini..."></textarea>
       <button class="note-save-btn" onclick="saveNote()">Simpan Catatan</button>
 
       <div style="margin-top:16px">
@@ -456,11 +523,13 @@
       </div>
     </div>
 
+    @if(!$isVideoType)
     <div class="right-body hidden" id="rbody-thumb">
       <div id="thumbGrid" style="display:flex;flex-direction:column;gap:6px">
         <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:16px">Memuat thumbnail...</p>
       </div>
     </div>
+    @endif
   </aside>
 </div>
 
@@ -481,7 +550,7 @@ const contentType = @json($content->type ?? 'text');
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 const userName = @json($user_account->name ?? 'Siswa');
 
-const isQuestion = {{ $content_is_question }};
+const isQuestion = {{ $content_is_question ?? 0 }};
 let isAlreadyCompleted = {{ in_array($content->id, $completedContentIds) ? 'true' : 'false' }};
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -496,8 +565,20 @@ let activeDocIdx = 0;
 let completedDocs = new Set(); 
 
 window.addEventListener('DOMContentLoaded', () => {
-  initViewer();
-  document.getElementById('pageInput').addEventListener('change', e => goToPage(+e.target.value));
+  if (contentType !== 'video') {
+      initViewer();
+      document.getElementById('pageInput').addEventListener('change', e => goToPage(+e.target.value));
+  } else {
+      // Jika Video, tampilkan tombol selesai secara langsung jika belum dikerjakan
+      if (!isAlreadyCompleted) {
+          const btnCompleteVideo = document.getElementById('btnCompleteVideo');
+          if(btnCompleteVideo) btnCompleteVideo.style.display = 'inline-flex';
+      }
+      
+      // Ambil notes yang sudah ada untuk video
+      document.getElementById('noteTA').value = notes['video_notes'] || '';
+      renderNotes();
+  }
   
   if(isAlreadyCompleted) {
       markUICompleted();
@@ -673,7 +754,10 @@ function setupObserver(wrap) {
       document.getElementById('btnPrev').disabled = pg <= 1;
       document.getElementById('btnNext').disabled = pg >= totalPages;
       document.getElementById('stripPage').textContent = pg;
-      document.getElementById('notePageNum').textContent = pg;
+      
+      const notePageLabel = document.getElementById('notePageNum');
+      if (notePageLabel) notePageLabel.textContent = pg;
+      
       document.getElementById('noteTA').value = notes['doc_' + activeDocIdx + '_pg_' + pg] || '';
 
       document.querySelectorAll('.thumb-item').forEach((el,i) => {
@@ -722,8 +806,7 @@ function triggerCompletionAlert() {
   if (isAlreadyCompleted || completedDocs.has(activeDocIdx)) return;
   completedDocs.add(activeDocIdx);
 
-  let item_score = ({{ $moduleKey->max_point ?? 0 }} / {{ $moduleContent_total }})/0.2;
-  item_score = item_score; 
+  let item_score = ({{ $moduleKey->max_point ?? 0 }} / {{ $moduleContent_total > 0 ? $moduleContent_total : 1 }}) / 0.2;
   
   if (isQuestion == 1) {
     Swal.fire({
@@ -743,57 +826,13 @@ function triggerCompletionAlert() {
         }
       }
     }).then((result) => {
-      if (result.isConfirmed) {
-        const kesimpulanUser = result.value; 
-        
-        Swal.fire({
-            title: 'Menyimpan Progress...',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading() }
-        });
-
-        fetch('{{ route('learning.store') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({
-                user_id: userId,
-                modul_id: moduleId,
-                module_content_id: moduleContentId,
-                score: item_score,
-                summary: kesimpulanUser,
-                title: `${userName} telah mendapatkan ${item_score} poin`,
-                type: contentType
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    title: "Selamat!",
-                    text: `Kamu berhasil mendapatkan ${item_score} poin.`,
-                    icon: "success",
-                    confirmButtonColor: '#16a34a'
-                }).then(() => {
-                    // REDIRECT KE MATERI BERIKUTNYA ATAU KE INDEX
-                    window.location.href = nextUrl;
-                });
-            } else {
-                Swal.fire('Gagal!', data.message || 'Terjadi kesalahan saat menyimpan data.', 'error');
-            }
-        })
-        .catch(error => {
-            Swal.fire('Gagal!', 'Terjadi kesalahan koneksi ke server.', 'error');
-        });
-      }
+      if (result.isConfirmed) processStoreCompletion(result.value, item_score);
     });
   } else {
     Swal.fire({
       icon: 'success',
       title: 'Luar Biasa!',
-      html: `Kamu telah membaca semua halaman materi ini. <br><br>Kamu mendapatkan <b>${item_score} poin</b>!`,
+      html: `Kamu telah ${contentType === 'video' ? 'menonton' : 'membaca semua halaman'} materi ini. <br><br>Kamu mendapatkan <b>${item_score} poin</b>!`,
       input: 'textarea',
       inputLabel: 'Berikan kesimpulan Anda mengenai materi ini:',
       inputPlaceholder: 'Tulis kesimpulan singkat di sini...',
@@ -807,61 +846,63 @@ function triggerCompletionAlert() {
         }
       }
     }).then((result) => {
-      if (result.isConfirmed) {
-        const kesimpulanUser = result.value; 
-        
-        Swal.fire({
-            title: 'Menyimpan Progress...',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading() }
-        });
-
-        fetch('{{ route('learning.store') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({
-                user_id: userId,
-                modul_id: moduleId,
-                module_content_id: moduleContentId,
-                score: item_score,
-                summary: kesimpulanUser,
-                title: `${userName} telah mendapatkan ${item_score} poin`,
-                type: contentType
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    title: "Selamat!",
-                    text: `Kamu berhasil mendapatkan ${item_score} poin.`,
-                    icon: "success",
-                    confirmButtonColor: '#16a34a'
-                }).then(() => {
-                    // REDIRECT KE MATERI BERIKUTNYA ATAU KE INDEX
-                    window.location.href = nextUrl;
-                });
-            } else {
-                Swal.fire('Gagal!', data.message || 'Terjadi kesalahan saat menyimpan data.', 'error');
-            }
-        })
-        .catch(error => {
-            Swal.fire('Gagal!', 'Terjadi kesalahan koneksi ke server.', 'error');
-        });
-      }
+      if (result.isConfirmed) processStoreCompletion(result.value, item_score);
     });
   }
 }
 
+function processStoreCompletion(kesimpulanUser, item_score) {
+    Swal.fire({
+        title: 'Menyimpan Progress...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading() }
+    });
+
+    fetch('{{ route("learning.store") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            modul_id: moduleId,
+            module_content_id: moduleContentId,
+            score: item_score,
+            summary: kesimpulanUser,
+            title: `${userName} telah mendapatkan ${item_score} poin`,
+            type: contentType
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                title: "Selamat!",
+                text: `Kamu berhasil mendapatkan ${item_score} poin.`,
+                icon: "success",
+                confirmButtonColor: '#16a34a'
+            }).then(() => {
+                window.location.href = nextUrl;
+            });
+        } else {
+            Swal.fire('Gagal!', data.message || 'Terjadi kesalahan saat menyimpan data.', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Gagal!', 'Terjadi kesalahan koneksi ke server.', 'error');
+    });
+}
+
 function markUICompleted() {
-  const btn = document.getElementById('btnComplete');
+  const isVideo = contentType === 'video';
+  const btnId = isVideo ? 'btnCompleteVideo' : 'btnComplete';
+  const btn = document.getElementById(btnId);
+  
   if(btn) {
       btn.style.display = 'inline-flex';
       btn.className = 'btn-complete done';
-      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg> Selesai Dibaca`;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg> Selesai ${isVideo ? 'Ditonton' : 'Dibaca'}`;
       btn.disabled = true;
       btn.onclick = null; 
   }
@@ -873,8 +914,6 @@ function markUICompleted() {
       if(!document.querySelector('.toc-item.active .toc-meta').innerHTML.includes('Selesai')){
          document.querySelector('.toc-item.active .toc-meta').innerHTML += ' · Selesai';
       }
-      
-      // HAPUS setTimeout reload disini
   }
 }
 
@@ -913,7 +952,9 @@ async function buildThumbs() {
 
 function saveNote() {
   const text = document.getElementById('noteTA').value.trim();
-  const key  = 'doc_' + activeDocIdx + '_pg_' + curPage;
+  const isVideo = contentType === 'video';
+  const key  = isVideo ? 'video_notes' : ('doc_' + activeDocIdx + '_pg_' + curPage);
+  
   if (text) notes[key] = text;
   else delete notes[key];
   renderNotes();
@@ -924,16 +965,19 @@ function saveNote() {
 
 function renderNotes() {
   const list = document.getElementById('notesList');
-  const prefix = 'doc_' + activeDocIdx + '_pg_';
+  const isVideo = contentType === 'video';
+  const prefix = isVideo ? 'video_notes' : ('doc_' + activeDocIdx + '_pg_');
+  
   const entries = Object.entries(notes).filter(([k]) => k.startsWith(prefix));
   if (!entries.length) {
     list.innerHTML = '<p style="font-size:12px;color:var(--muted)">Belum ada catatan.</p>';
     return;
   }
   list.innerHTML = entries.map(([k, txt]) => {
-    const pg = k.replace(prefix,'');
+    const isVidNote = k === 'video_notes';
+    const pg = isVidNote ? 'Materi Video' : k.replace(prefix,'');
     return `<div class="saved-note">
-      <div class="saved-note-page">Halaman ${pg}</div>
+      <div class="saved-note-page">${isVidNote ? pg : 'Halaman ' + pg}</div>
       ${esc(txt).replace(/\n/g,'<br>')}
       <button class="saved-note-del" onclick="delNote('${k}')">×</button>
     </div>`;
@@ -944,8 +988,10 @@ function delNote(key) { delete notes[key]; renderNotes(); }
 
 function switchTab(name) {
   ['info','notes','thumb'].forEach(t => {
-    document.getElementById('rtab-' + t).classList.toggle('active', t === name);
-    document.getElementById('rbody-' + t).classList.toggle('hidden', t !== name);
+    const tabBtn = document.getElementById('rtab-' + t);
+    const tabBody = document.getElementById('rbody-' + t);
+    if(tabBtn) tabBtn.classList.toggle('active', t === name);
+    if(tabBody) tabBody.classList.toggle('hidden', t !== name);
   });
 }
 

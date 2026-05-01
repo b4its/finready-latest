@@ -64,7 +64,7 @@
         <div class="paper">
             
             <div class="header-title">
-                Cafe Kopi Nusantara<br>
+                                {{ $detailProfilUMKM->name ?? "Cafe Kopi Nusantara" }}<br>
                 BUKU BESAR UMUM<br>
                 {{ $periodeString }}<br>
                 (In Rupiah)
@@ -149,6 +149,8 @@
 
         </div>
     </div>
-
+    <script>
+        window.print();
+    </script>
 </body>
 </html>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AkunKeuangan;
 use App\Models\JurnalUmum;
 use App\Models\SaldoAwal;
+use App\Models\UmkmProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,7 @@ class NeracaSaldoSetelahPenyesuaianController extends Controller
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
         $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         // Ambil semua akun keuangan
         $akunKeuangans = AkunKeuangan::where(function($query) use ($idUsers) {
@@ -132,7 +134,7 @@ class NeracaSaldoSetelahPenyesuaianController extends Controller
         $namaBulan = Carbon::createFromFormat('m', $bulanFormatted)->translatedFormat('F');
         $periodeString = "Per {$lastDayOfMonth} " . ucfirst($namaBulan) . " {$tahun}";
 
-        return view('dokumen.neraca_saldo_setelah_penyesuaian', compact('akunKeuangans', 'periodeString', 'total'));
+        return view('dokumen.neraca_saldo_setelah_penyesuaian', compact('akunKeuangans', 'periodeString', 'total', 'detailProfilUMKM'));
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AkunKeuangan;
 use App\Models\JurnalUmum;
 use App\Models\SaldoAwal;
+use App\Models\UmkmProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,7 @@ class ArusKasController extends Controller
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
         $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         // 1. Tarik Data Utama (FILTER TIPE SAYA HAPUS TOTAL AGAR DATA MUNCUL)
         $semuaJurnal = JurnalUmum::with(['akunKeuangan', 'details'])
@@ -198,7 +200,7 @@ class ArusKasController extends Controller
             'totalMasukOp', 'totalKeluarOp', 'bersihOperasi',
             'bersihInvestasi',
             'totalMasukPend', 'totalKeluarPend', 'bersihPendanaan',
-            'kenaikanKas', 'saldoKasAwal', 'saldoKasAkhir'
+            'kenaikanKas', 'saldoKasAwal', 'saldoKasAkhir', 'detailProfilUMKM'
         ));
     }
 }

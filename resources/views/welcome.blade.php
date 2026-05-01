@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinReady — Kuasai Laporan Keuangan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="shortcut icon" href="{{ asset('images/logo.png') }}" type="image/x-icon">
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap"
       rel="stylesheet"
@@ -949,23 +950,13 @@
     <nav>
       <div class="nav-inner">
         <a href="index.html" class="logo">
-          <div class="logo-icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <path d="M3 3v18h18" />
-              <path d="m7 16 4-4 4 4 4-8" />
-            </svg>
+          <div class="logo-icon" style="background: white;">
+            <img src="{{ asset('images/logo.png') }}" style="height: 30px;">
           </div>
           FinReady
         </a>
         <div class="nav-links">
           <a href="#fitur" class="hide-mobile">Fitur</a>
-          <a href="#kursus" class="hide-mobile">Kursus</a>
           <a href="#testimoni" class="hide-mobile">Testimoni</a>
          @auth
             @if (Auth::user()->role == "umkm")
@@ -1005,7 +996,6 @@
     <!-- MOBILE DRAWER -->
     <div class="mobile-menu" id="mobileMenu">
       <a href="#fitur" onclick="closeMobileMenu()">Fitur</a>
-      <a href="#kursus" onclick="closeMobileMenu()">Kursus</a>
       <a href="#testimoni" onclick="closeMobileMenu()">Testimoni</a>
       <div class="mobile-divider"></div>
       <a href="{{ route('authenticate.login') }}" class="mobile-btn-outline" >Masuk</a>
@@ -1032,7 +1022,7 @@
               <path d="m9 18 6-6-6-6" />
             </svg>
           </button>
-          <a href="#kursus" class="btn btn-outline btn-hero">Lihat Kursus</a>
+          <a href="#fitur" class="btn btn-outline btn-hero">Lihat lebih lanjut</a>
         </div>
         <div class="hero-stats">
           <div class="stat-item">
@@ -1062,7 +1052,7 @@
         <div class="hero-card">
           <div class="hero-card-header">
             <span class="hero-card-title">Laporan Laba Rugi</span>
-            <span class="hero-card-badge">Q4 2024</span>
+            <span class="hero-card-badge">Q4 2026</span>
           </div>
           <div class="chart-bars">
             <div class="chart-bar" style="height: 45%"></div>
@@ -1159,150 +1149,6 @@
       </div>
     </section>
 
-    <!-- COURSES -->
-    <section class="section" id="kursus" style="padding-top: 0">
-      <div class="section-header">
-        <p class="section-eyebrow">Kursus Populer</p>
-        <h2 class="section-title">Pilih topik yang ingin Anda pelajari</h2>
-        <p class="section-sub">
-          Dari dasar akuntansi hingga analisis laporan keuangan tingkat lanjut.
-        </p>
-      </div>
-      <div class="courses-grid">
-        <a href="pembelajaran.html" class="course-card">
-          <div class="course-thumb blue">N/L/CF</div>
-          <div class="course-body">
-            <span class="course-tag blue">Pemula</span>
-            <h3>Dasar Laporan Keuangan</h3>
-            <p>
-              Pelajari tiga laporan keuangan utama: Neraca, Laba Rugi, dan Arus
-              Kas dari nol.
-            </p>
-          </div>
-          <div class="course-footer">
-            <div class="course-meta">
-              <span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
-                8 jam
-              </span>
-              <span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                </svg>
-                24 modul
-              </span>
-            </div>
-            <span style="color: #16a34a; font-weight: 600">Gratis</span>
-          </div>
-        </a>
-        <a href="pembelajaran.html" class="course-card">
-          <div class="course-thumb green">ROI%</div>
-          <div class="course-body">
-            <span class="course-tag green">Menengah</span>
-            <h3>Analisis Rasio Keuangan</h3>
-            <p>
-              Menghitung dan menginterpretasikan rasio likuiditas,
-              profitabilitas, dan solvabilitas perusahaan.
-            </p>
-          </div>
-          <div class="course-footer">
-            <div class="course-meta">
-              <span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
-                12 jam
-              </span>
-              <span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                </svg>
-                18 modul
-              </span>
-            </div>
-            <span style="color: #b45309; font-weight: 600">Pro</span>
-          </div>
-        </a>
-        <a href="pembelajaran.html" class="course-card">
-          <div class="course-thumb amber">IFRS</div>
-          <div class="course-body">
-            <span class="course-tag amber">Lanjutan</span>
-            <h3>Standar Akuntansi PSAK/IFRS</h3>
-            <p>
-              Memahami penerapan standar akuntansi internasional dalam
-              penyusunan laporan keuangan perusahaan publik.
-            </p>
-          </div>
-          <div class="course-footer">
-            <div class="course-meta">
-              <span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
-                16 jam
-              </span>
-              <span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                </svg>
-                30 modul
-              </span>
-            </div>
-            <span style="color: #b45309; font-weight: 600">Pro</span>
-          </div>
-        </a>
-      </div>
-    </section>
 
     <!-- TESTIMONIALS -->
     <section class="section" id="testimoni" style="padding-top: 0">
@@ -1383,7 +1229,7 @@
       </p>
       <div class="cta-actions">
         <button onclick="openModal('registerModal')" class="btn btn-white btn-hero">Daftar Gratis Sekarang</button>
-        <a href="login.html" class="btn btn-ghost btn-hero">Sudah punya akun? Masuk</a>
+        <a href="{{ route('authenticate.login') }}" class="btn btn-ghost btn-hero">Sudah punya akun? Masuk</a>
       </div>
     </div>
 
@@ -1412,18 +1258,10 @@
           </p>
         </div>
         <div class="footer-col">
-          <h4>Produk</h4>
-          <a href="#">Kursus</a>
-          <a href="#">Sertifikasi</a>
-          <a href="#">Latihan Soal</a>
-          <a href="#">Live Class</a>
+
         </div>
         <div class="footer-col">
-          <h4>Perusahaan</h4>
-          <a href="#">Tentang Kami</a>
-          <a href="#">Blog</a>
-          <a href="#">Karir</a>
-          <a href="#">Kontak</a>
+
         </div>
         <div class="footer-col">
           <h4>Bantuan</h4>
@@ -1433,8 +1271,8 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2024 FinReady. Hak cipta dilindungi.</span>
-        <span>Made with ❤️ in Indonesia</span>
+        <span>© 2026 FinReady. Hak cipta dilindungi.</span>
+        <span>Made with FinReady Team</span>
       </div>
     <!-- ROLE SELECTOR MODAL: REGISTER -->
     <div class="modal-overlay" id="registerModal" onclick="handleOverlayClick(event,'registerModal')">
@@ -1447,12 +1285,12 @@
           <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
         </div>
         <div class="role-cards">
-          <a href="{{ route('authenticate.login') }}?role=umkm" class="role-card">
+          <a href="{{ route('authenticate.register') }}?role=umkm" class="role-card">
             <div class="role-card-icon">🏪</div>
             <div class="role-card-name">UMKM</div>
             <div class="role-card-desc">Pemilik usaha yang ingin mengelola laporan keuangan</div>
           </a>
-          <a href="{{ route('authenticate.login') }}?role=investor" class="role-card">
+          <a href="{{ route('authenticate.register') }}?role=investor" class="role-card">
             <div class="role-card-icon">📈</div>
             <div class="role-card-name">Investor</div>
             <div class="role-card-desc">Investor yang ingin menganalisis peluang bisnis</div>

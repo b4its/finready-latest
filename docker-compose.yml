@@ -30,6 +30,7 @@ services:
       context: .
       dockerfile: ./docker-nginx/Dockerfile
     container_name: finready-php-fpm
+    hostname: php-fpm
     profiles: ["nginx"] # <--- Ikut grup nginx
     volumes:
       - .:/var/www/html

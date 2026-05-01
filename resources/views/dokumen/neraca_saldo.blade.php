@@ -51,7 +51,7 @@
         <div class="paper">
             
             <div class="header-title">
-                Cafe Kopi Nusantara<br>
+                {{ $detailProfilUMKM->name ?? "Cafe Kopi Nusantara" }}<br>
                 NERACA SALDO<br>
                 {{ $periodeString }}
             </div>
@@ -113,6 +113,8 @@
 
         </div>
     </div>
-
+    <script>
+        window.print();
+    </script>
 </body>
 </html>

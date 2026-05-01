@@ -9,6 +9,7 @@ use App\Http\Controllers\JurnalUmumController;
 use App\Http\Controllers\LabaRugiController;
 use App\Http\Controllers\Learning\LearningController;
 use App\Http\Controllers\Learning\QuizController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\NeracaSaldoController;
 use App\Http\Controllers\NeracaSaldoSetelahPenyesuaianController;
@@ -79,5 +80,6 @@ Route::prefix('dokumen')->group(function () {
     Route::controller(ArusKasController::class)->group(function () {
         Route::get('/arus-kas', 'index')->name('arus_kas.index');
     });
+
 });
 

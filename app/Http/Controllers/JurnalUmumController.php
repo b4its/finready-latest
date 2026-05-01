@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JurnalUmum;
+use App\Models\UmkmProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,7 @@ public function index(Request $request)
         $bulan = $request->query('bulan', date('m'));
         $tahun = $request->query('tahun', date('Y'));
         $idUsers = (int) ($request->query('idUsers') ?? auth()->id() ?? 1);
+        $detailProfilUMKM = UmkmProfile::where('idUsers', $idUsers)->first();
 
         // Eager load relasi berdasarkan model yang Anda berikan
         $jurnals = JurnalUmum::with(['akunKeuangan', 'details'])
@@ -118,7 +120,7 @@ public function index(Request $request)
             'formattedJurnals', 
             'periodeString', 
             'totalDebit', 
-            'totalKredit'
+            'totalKredit', 'detailProfilUMKM'
         ));
     }
 }
